@@ -7,7 +7,7 @@ const imageMap = {
     "hero-two": "/image/hero-two.png",
     "hero-three": "/image/hero-three.png",
     "hero-four": "/image/hero-four.png",
-    "hero-five": "/image/hero-five.png",
+    "hero-five": "/image/hero-five.PNG",
 } as const;
 
 export function Img({ name, alt, className, fill = false, ...props }: ImgProps) {
