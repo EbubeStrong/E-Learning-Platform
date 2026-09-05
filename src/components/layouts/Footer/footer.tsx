@@ -6,10 +6,9 @@ import Link from "next/link";
 
 const footerLinks = {
   platform: [
-    { label: "Take a Quiz", href: "/quizzes" },
-    { label: "Quiz Categories", href: "/categories" },
-    { label: "Track Progress", href: "/progress" },
-    { label: "About Us", href: "/about-us" }
+    { label: "About Us", href: "/about-us" },
+    { label: "Courses", href: "/courses" },
+    { label: "Contact Us", href: "/contact-us" }
   ],
   connect: [
     { label: "LinkedIn", href: "https://www.linkedin.com/in/abrahamsamuel567/" },
@@ -19,7 +18,7 @@ const footerLinks = {
 
 export default function Footer() {
   return (
-    <footer className="relative md:mx-5 mb-5 pt-20 overflow-hidden rounded-t-[2rem] border border-mocha-400/20 bg-[#171310] text-white shadow-[0_20px_50px_-10px_rgba(0,0,0,0.6)]">
+    <footer className="relative md:mx-5 md:mb-5 pt-4 md:pt-20 overflow-hidden md:rounded-t-[2rem] border border-mocha-400/20 bg-[#171310] text-white shadow-[0_20px_50px_-10px_rgba(0,0,0,0.6)]">
       {/* Background glows */}
       <div className="pointer-events-none absolute -left-32 -top-32 h-80 w-80 rounded-full bg-mocha-300/10 blur-[100px]" />
 
