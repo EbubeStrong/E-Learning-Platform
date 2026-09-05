@@ -13,24 +13,19 @@ import {
   ListVideo,
   Lock,
   Play,
-  Sparkles,
   Trophy,
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import type {
   CourseVideo,
@@ -54,10 +49,7 @@ function CourseDetail({
   const userId = userDetails?._id as Id<"users"> | undefined;
   const { isAuthenticated } = useConvexAuth();
   const playerRef = useRef<HTMLDivElement>(null);
-  const [curriculumOpen, setCurriculumOpen] = useState(true);
-  const [activeSidebarTab, setActiveSidebarTab] = useState<
-    "content" | "assistant"
-  >("content");
+  const [courseContentOpen, setCourseContentOpen] = useState(false);
 
   const { course, videos, tutor, loading, notFound } =
     useCourseDetail(courseId);
@@ -156,10 +148,9 @@ function CourseDetail({
 
   return (
     <div className="flex min-h-screen w-full flex-col bg-ivory-200 text-mocha-500">
-      {/* ===== Certificate progress section (Udemy-style slim dark bar) ===== */}
       <section
         aria-label="Course progress"
-        className="sticky top-0 z-40 flex h-14 items-center gap-3 bg-mocha-600 px-4 text-ivory-100 shadow-md lg:h-16 lg:px-5"
+        className="sticky top-0 z-40 flex min-h-14 items-center gap-3 bg-mocha-500 px-4 py-2 text-ivory-100 shadow-md lg:min-h-16 lg:px-5"
       >
         <span className="hidden text-xs font-medium uppercase tracking-wider text-mocha-300 md:inline">
           Certificate Course
@@ -209,19 +200,18 @@ function CourseDetail({
       </section>
 
       {/* ===== Two-column body ===== */}
-      <div className="mx-auto w-full max-w-7xl flex-1 px-4 py-5 lg:grid lg:grid-cols-[1fr_340px] lg:px-0 lg:py-0">
+      <div className="w-full flex-1 px-4 py-5 lg:grid lg:grid-cols-[minmax(0,1fr)_380px] lg:gap-0 lg:px-0 lg:py-0">
         {/* --- Content column (left) --- */}
         <main className="min-w-0">
           {/* Video player */}
           <div
             ref={playerRef}
-            className="aspect-video w-full overflow-hidden rounded-2xl bg-black shadow-[0_16px_36px_rgba(58,42,38,0.18)]"
+            className="aspect-video w-full overflow-hidden rounded-2xl bg-black shadow-[0_16px_36px_rgba(58,42,38,0.18)] ring-1 ring-mocha-500/10 sm:rounded-3xl lg:rounded-none lg:ring-0"
           >
             {!isSignedIn ? (
               <div
-                className={`relative flex h-full w-full flex-col items-center justify-center gap-4 bg-gradient-to-br ${
-                  getCourseAccent(course.category)
-                }`}
+                className={`relative flex h-full w-full flex-col items-center justify-center gap-4 bg-gradient-to-br ${getCourseAccent(course.category)
+                  }`}
               >
                 <div className="absolute inset-0 bg-black/55" />
                 <div className="relative flex h-14 w-14 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur-sm">
@@ -249,9 +239,8 @@ function CourseDetail({
               />
             ) : (
               <div
-                className={`flex h-full w-full items-center justify-center bg-gradient-to-br ${
-                  getCourseAccent(course.category)
-                }`}
+                className={`flex h-full w-full items-center justify-center bg-gradient-to-br ${getCourseAccent(course.category)
+                  }`}
               >
                 <span className="text-6xl font-black tracking-tight text-white/70">
                   {course.title.charAt(0)}
@@ -261,62 +250,63 @@ function CourseDetail({
           </div>
 
           {/* Prev / Next + current title */}
-          <div className="mt-4 flex flex-wrap items-center gap-3">
-            <Button
-              type="button"
-              variant="outline"
-              disabled={currentIndex <= 0}
-              onClick={() =>
-                currentIndex > 0 &&
-                redirectToVideo(videos[currentIndex - 1], currentIndex - 1)
-              }
-              className="inline-flex items-center gap-2 rounded-xl border border-mocha-300/70 bg-mocha-100 px-4 py-2 text-sm font-semibold text-mocha-500 transition-colors hover:bg-mocha-200 disabled:cursor-not-allowed disabled:opacity-40 disabled:pointer-events-auto"
-            >
-              <Play className="h-4 w-4 -scale-x-100" />
-              Previous
-            </Button>
-            <Button
-              type="button"
-              disabled={currentIndex >= videos.length - 1}
-              onClick={() =>
-                currentIndex < videos.length - 1 &&
-                redirectToVideo(videos[currentIndex + 1], currentIndex + 1)
-              }
-              className="inline-flex items-center gap-2 rounded-xl bg-mocha-500 px-4 py-2 text-sm font-semibold text-ivory-200 transition-colors hover:bg-mocha-400 disabled:cursor-not-allowed disabled:opacity-40 disabled:pointer-events-auto"
-            >
-              Next
-              <Play className="h-4 w-4" />
-            </Button>
-            <span className="min-w-0 flex-1 truncate text-sm font-medium text-mocha-400">
-              {currentIndex + 1}. {currentVideo.title}
-            </span>
-          </div>
-
-          {/* Instructor row */}
-          <div className="mt-4 flex items-center gap-3 text-mocha-400">
-            <Avatar size="lg" className="shrink-0 bg-mocha-300/40 text-sm font-semibold text-mocha-500">
-              {avatar && <AvatarImage src={avatar} alt={author} />}
-              <AvatarFallback className="bg-mocha-300/40 font-semibold text-mocha-500">
-                {author.charAt(0)}
-              </AvatarFallback>
-            </Avatar>
-            <div className="flex min-w-0 flex-col">
-              <span className="truncate text-lg font-medium text-mocha-500">
-                {author}
+          <div className="px-10">
+            <div className="mt-5 flex flex-wrap items-center gap-3 border-b border-mocha-300/40 pb-5">
+              <Button
+                type="button"
+                variant="outline"
+                disabled={currentIndex <= 0}
+                onClick={() =>
+                  currentIndex > 0 &&
+                  redirectToVideo(videos[currentIndex - 1], currentIndex - 1)
+                }
+                className="inline-flex items-center gap-2 rounded-xl border border-mocha-300/70 bg-mocha-100 px-4 py-2 text-sm font-semibold text-mocha-500 transition-colors hover:bg-mocha-200 disabled:cursor-not-allowed disabled:opacity-40 disabled:pointer-events-auto"
+              >
+                <Play className="h-4 w-4 -scale-x-100" />
+                Previous
+              </Button>
+              <Button
+                type="button"
+                disabled={currentIndex >= videos.length - 1}
+                onClick={() =>
+                  currentIndex < videos.length - 1 &&
+                  redirectToVideo(videos[currentIndex + 1], currentIndex + 1)
+                }
+                className="inline-flex items-center gap-2 rounded-xl bg-mocha-500 px-4 py-2 text-sm font-semibold text-ivory-200 transition-colors hover:bg-mocha-400 disabled:cursor-not-allowed disabled:opacity-40 disabled:pointer-events-auto"
+              >
+                Next
+                <Play className="h-4 w-4" />
+              </Button>
+              <span className="order-3 min-w-0 basis-full truncate text-sm font-medium text-mocha-400 sm:order-none sm:basis-auto">
+                {currentIndex + 1}. {currentVideo.title}
               </span>
-              {tutor?.jobTitle && (
-                <span className="line-clamp-1 text-xs text-mocha-400">
-                  {tutor.jobTitle}
-                </span>
-              )}
             </div>
-          </div>
 
-          {/* --- Overview content (always shown) --- */}
-          <div className="py-6">
+            {/* Instructor row */}
+            <div className="mt-5 flex items-center gap-3 text-mocha-400">
+              <Avatar size="lg" className="shrink-0 bg-mocha-300/40 text-sm font-semibold text-mocha-500">
+                {avatar && <AvatarImage src={avatar} alt={author} />}
+                <AvatarFallback className="bg-mocha-300/40 font-semibold text-mocha-500">
+                  {author.charAt(0)}
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex min-w-0 flex-col">
+                <span className="truncate text-lg font-medium text-mocha-500">
+                  {author}
+                </span>
+                {tutor?.jobTitle && (
+                  <span className="line-clamp-1 text-xs text-mocha-400">
+                    {tutor.jobTitle}
+                  </span>
+                )}
+              </div>
+            </div>
+
+            {/* --- Overview content (always shown) --- */}
+            <div className="py-7 sm:py-8">
               <div className="space-y-7">
                 {/* Stats */}
-                <div className="grid grid-cols-2 gap-6 border-b border-mocha-300/40 pb-6 sm:grid-cols-3">
+                <div className="grid grid-cols-2 gap-4 border-b border-mocha-300/40 pb-6 sm:grid-cols-3 sm:gap-6">
                   {[
                     { label: "Skill level", value: course.level },
                     { label: "Lectures", value: `${videos.length}` },
@@ -411,132 +401,57 @@ function CourseDetail({
                   </div>
                 </section>
               </div>
+            </div>
           </div>
         </main>
 
-        {/* --- Sidebar (right, sticky) --- */}
-        <aside className="mt-8 flex flex-col overflow-hidden border-l border-mocha-300/60 bg-mocha-100 shadow-[0_10px_24px_rgba(58,42,38,0.06)] lg:mt-0 lg:max-h-[calc(100vh-4rem)] lg:sticky lg:top-16">
-          {/* Sidebar tabs */}
-          <Tabs
-            value={activeSidebarTab}
-            onValueChange={(tab) =>
-              setActiveSidebarTab((tab as "content" | "assistant") ?? "content")
-            }
-            className="flex min-h-0 flex-1 flex-col gap-0!"
-          >
-            <TabsList
-              variant="line"
-              className="flex h-auto! w-full gap-0 rounded-none border-b border-mocha-300/50 bg-transparent p-0!"
-            >
-              <TabsTrigger
-                value="content"
-                className="h-auto! flex-1 rounded-none border-b-2 border-transparent px-1.5 text-sm font-bold transition-colors hover:text-mocha-500 data-active:border-mocha-500 data-active:bg-transparent data-active:text-mocha-500 data-active:shadow-none after:hidden"
+        <Sheet open={courseContentOpen} onOpenChange={setCourseContentOpen}>
+          <SheetTrigger
+            render={
+              <Button
+                type="button"
+                variant="outline"
+                className="mt-5 flex w-full items-center justify-between rounded-xl border-mocha-300/60 bg-mocha-100 px-4 py-3 text-left text-mocha-500 lg:hidden"
               >
-                Course content
-              </TabsTrigger>
-              <TabsTrigger
-                value="assistant"
-                className="h-auto! flex-1 rounded-none border-b-2 border-transparent px-1.5 text-sm font-bold transition-colors hover:text-mocha-500 data-active:border-mocha-500 data-active:bg-transparent data-active:text-mocha-500 data-active:shadow-none after:hidden"
-              >
-                <span className="inline-flex items-center gap-1.5">
-                  <Sparkles className="h-4 w-4" />
-                  AI Assistant
+                <span className="font-semibold">Course content</span>
+                <span className="text-xs text-mocha-400">
+                  {completedCount}/{videos.length} complete
                 </span>
-              </TabsTrigger>
-            </TabsList>
+              </Button>
+            }
+          />
+          <SheetContent
+            side="right"
+            className="w-[min(92vw,380px)] gap-0 border-mocha-300/60 bg-mocha-100 p-0 text-mocha-500"
+          >
+            <SheetHeader className="border-b border-mocha-300/40 pr-14">
+              <SheetTitle className="text-left text-mocha-500">
+                Course content
+              </SheetTitle>
+              <SheetDescription className="text-left text-mocha-400">
+                {completedCount} of {videos.length} lessons complete
+              </SheetDescription>
+            </SheetHeader>
+            <CourseContentPanel
+              courseTitle={course.title}
+              completedCount={completedCount}
+              totalDuration={totalDuration}
+              videos={videos}
+              currentVideoId={currentVideo.videoId}
+              onSelect={redirectToVideo}
+            />
+          </SheetContent>
+        </Sheet>
 
-            <TabsContent
-              value="content"
-              className="flex min-h-0 flex-1 flex-col"
-            >
-              <Accordion
-                value={curriculumOpen ? ["curriculum"] : []}
-                onValueChange={(value) =>
-                  setCurriculumOpen(value.includes("curriculum"))
-                }
-className="flex min-h-0 flex-1 flex-col"
-              >
-                <AccordionItem
-                  value="curriculum"
-                  className="flex min-h-0 flex-1 flex-col border-0!"
-                >
-                  <AccordionTrigger className="flex w-full items-start gap-2 rounded-none px-4 py-3 text-left hover:no-underline [&_[data-slot='accordion-trigger-icon']]:mt-1! [&_[data-slot='accordion-trigger-icon']]:shrink-0! [&_[data-slot='accordion-trigger-icon']]:text-mocha-400!" >
-                    <div className="min-w-0 flex-1">
-                      <div className="text-sm font-bold text-mocha-500">
-                        Section 1: {course.title}
-                      </div>
-                      <div className="mt-0.5 text-xs text-mocha-400">
-                        {completedCount} / {videos.length} | {totalDuration}
-                      </div>
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent className="overflow-y-auto border-t border-mocha-300/40 pt-0 lg:max-h-[calc(100vh-10.5rem)]">
-                    {videos.length === 0 ? (
-                      <div className="p-6 text-center text-sm text-mocha-400">
-                        No lessons available for this course yet.
-                      </div>
-                    ) : (
-                      <div className="divide-y divide-mocha-300/30">
-                        {videos.map((video, index) => {
-                          const isActive =
-                            video.videoId === currentVideo.videoId;
-                          return (
-                            <Button
-                              key={video.videoId}
-                              type="button"
-                              variant="ghost"
-                              onClick={() => redirectToVideo(video, index)}
-                              className={cn(
-                                "flex w-full items-start gap-3 rounded-none px-4 py-3 text-left transition-colors duration-200",
-                                isActive
-                                  ? "bg-mocha-300/40 text-mocha-500 hover:bg-mocha-300/40"
-                                  : "hover:bg-mocha-300/25"
-                              )}
-                            >
-                              <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center">
-                                {isActive ? (
-                                  <Play className="h-4 w-4 text-mocha-500" />
-                                ) : (
-                                  <span className="sr-only">Play</span>
-                                )}
-                              </span>
-                              <span className="min-w-0 flex-1">
-                                <span className="block text-sm font-medium text-mocha-500">
-                                  <span className="text-mocha-400">
-                                    {index + 1}.
-                                  </span>{" "}
-                                  {video.title}
-                                </span>
-                                <span className="mt-0.5 flex items-center gap-2 text-xs text-mocha-400">
-                                  <ListVideo className="h-3 w-3" />
-                                  <span>{video.duration || "—"}</span>
-                                </span>
-                              </span>
-                            </Button>
-                          );
-                        })}
-                      </div>
-                    )}
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
-            </TabsContent>
-
-            <TabsContent
-              value="assistant"
-              className="flex min-h-0 flex-1 flex-col"
-            >
-              <div className="flex flex-1 flex-col items-center justify-center gap-3 p-8 text-center">
-                <Sparkles className="h-6 w-6 text-mocha-300" />
-                <p className="text-sm font-semibold text-mocha-500">
-                  AI Assistant
-                </p>
-                <p className="text-xs text-mocha-400">
-                  Ask questions about this course&apos;s content.
-                </p>
-              </div>
-            </TabsContent>
-          </Tabs>
+        <aside className="hidden min-h-[22rem] flex-col overflow-hidden border-mocha-300/60 bg-mocha-100 shadow-[0_10px_24px_rgba(58,42,38,0.06)] lg:sticky lg:top-16 lg:flex lg:max-h-[calc(100vh-4rem)] lg:rounded-none lg:border-y-0 lg:border-r-0 lg:border-l">
+          <CourseContentPanel
+            courseTitle={course.title}
+            completedCount={completedCount}
+            totalDuration={totalDuration}
+            videos={videos}
+            currentVideoId={currentVideo.videoId}
+            onSelect={redirectToVideo}
+          />
         </aside>
       </div>
     </div>
@@ -544,6 +459,79 @@ className="flex min-h-0 flex-1 flex-col"
 }
 
 export default CourseDetail;
+
+function CourseContentPanel({
+  courseTitle,
+  completedCount,
+  totalDuration,
+  videos,
+  currentVideoId,
+  onSelect,
+}: {
+  courseTitle: string;
+  completedCount: number;
+  totalDuration: string;
+  videos: CourseVideo[];
+  currentVideoId: string;
+  onSelect: (video: CourseVideo, index: number) => void;
+}) {
+  return (
+    <div className="flex min-h-0 flex-1 flex-col">
+      <div className="border-b border-mocha-300/40 px-4 py-4">
+        <div className="break-words text-sm font-bold text-mocha-500">
+          Section 1: {courseTitle}
+        </div>
+        <div className="mt-1 text-xs text-mocha-400">
+          {completedCount} / {videos.length} lessons · {totalDuration}
+        </div>
+      </div>
+
+      <div className="min-h-0 flex-1 space-y-5 overflow-y-auto px-3 py-3">
+        {videos.length === 0 ? (
+          <div className="p-6 text-center text-sm text-mocha-400">
+            No lessons available for this course yet.
+          </div>
+        ) : (
+          videos.map((video, index) => {
+            const isActive = video.videoId === currentVideoId;
+            return (
+              <Button
+                key={video.videoId}
+                type="button"
+                variant="ghost"
+                onClick={() => onSelect(video, index)}
+                className={cn(
+                  "flex h-auto min-w-0 w-full items-start gap-3 overflow-hidden rounded-xl px-4 py-3.5 text-left whitespace-normal transition-colors duration-200",
+                  isActive
+                    ? "bg-mocha-300/40 text-mocha-500 hover:bg-mocha-300/40"
+                    : "hover:bg-mocha-300/25"
+                )}
+              >
+                <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center">
+                  {isActive ? (
+                    <Play className="h-4 w-4 text-mocha-500" />
+                  ) : (
+                    <span className="sr-only">Play</span>
+                  )}
+                </span>
+                <span className="min-w-0 flex-1 overflow-hidden">
+                  <span className="block break-words text-sm font-medium leading-5 whitespace-normal text-mocha-500">
+                    <span className="text-mocha-400">{index + 1}.</span>{" "}
+                    {video.title}
+                  </span>
+                  <span className="mt-1 flex items-center gap-2 text-xs text-mocha-400">
+                    <ListVideo className="h-3 w-3" />
+                    <span>{video.duration || "—"}</span>
+                  </span>
+                </span>
+              </Button>
+            );
+          })
+        )}
+      </div>
+    </div>
+  );
+}
 
 const YT_STATE = { ENDED: 0, PLAYING: 1, PAUSED: 2 };
 

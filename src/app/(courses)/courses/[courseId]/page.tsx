@@ -20,7 +20,7 @@ function CoursePage() {
 
   return (
     <div className="flex min-h-screen w-full items-start justify-center bg-ivory-200 px-6 py-24">
-      <div className="w-full max-w-7xl">
+      <div className="w-full">
         <Skeleton className="h-8 w-2/3 rounded-xl" />
         <div className="mt-10 grid grid-cols-1 gap-6 lg:grid-cols-[1fr_360px]">
           <Skeleton className="aspect-video w-full rounded-3xl" />

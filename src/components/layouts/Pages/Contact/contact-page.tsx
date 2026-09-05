@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { ComponentProps } from "react";
+import type { FormEvent } from "react";
 import {
   ArrowRight,
   Loader2,
@@ -19,10 +19,6 @@ import { MaskedHeading } from "../About/masked-heading";
 import { Reveal } from "../About/reveal";
 import type { SubmitState } from "@/types/ui";
 
-type ContactFormSubmitEvent = Parameters<
-  NonNullable<ComponentProps<"form">["onSubmit"]>
->[0];
-
 const contactInfo = [
   { icon: Mail, label: "Email", value: process.env.NEXT_PUBLIC_EMAIL },
   { icon: Phone, label: "Phone", value: process.env.NEXT_PUBLIC_PHONE_NUMBER },
@@ -35,12 +31,14 @@ export default function ContactPage() {
   const [message, setMessage] = useState("");
   // const [decoyField, setDecoyField] = useState("");
   const [submitState, setSubmitState] = useState<SubmitState>("idle");
+  const [errorMessage, setErrorMessage] = useState("");
 
-  async function handleSubmit(event: ContactFormSubmitEvent) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (submitState === "sending") return;
 
     setSubmitState("sending");
+    setErrorMessage("");
 
     try {
       const res = await fetch("/api/contact", {
@@ -50,19 +48,13 @@ export default function ContactPage() {
           name: senderName,
           email: senderEmail,
           message,
-          // website: decoyField,
         }),
       });
       const data = (await res.json()) as { error?: string };
 
       if (!res.ok) {
         setSubmitState("error");
-        toast.add({
-          type: "error",
-          title: "Couldn't send message",
-          description: data.error ?? "Something went wrong. Please try again.",
-          timeout: 6000,
-        });
+        setErrorMessage(data.error ?? "Something went wrong. Please try again.");
         return;
       }
 
@@ -70,19 +62,9 @@ export default function ContactPage() {
       setSenderName("");
       setSenderEmail("");
       setMessage("");
-      toast.add({
-        type: "success",
-        title: "Message sent",
-        description: "Your message has been sent — we will get back to you soon.",
-      });
     } catch {
       setSubmitState("error");
-      toast.add({
-        type: "error",
-        title: "Couldn't send message",
-        description: "Something went wrong. Please try again.",
-        timeout: 6000,
-      });
+      setErrorMessage("Something went wrong. Please try again.");
     }
   }
 

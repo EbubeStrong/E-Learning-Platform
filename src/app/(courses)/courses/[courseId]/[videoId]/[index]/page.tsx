@@ -41,7 +41,7 @@ function CourseVideoPage() {
       >
         <Header />
       </motion.div>
-      <main className="overflow-x-clip">
+      <main>
         <CourseDetail courseId={courseId} videoId={videoId} index={safeIndex} />
         {/* <Footer /> */}
       </main>
