@@ -2,8 +2,12 @@
 import { Button } from "@/components/ui/button";
 import CardRail from "@/components/CardRail";
 import { Reveal } from "../About/reveal";
+import { useUser, SignInButton } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 
 function Hero() {
+    const { user } = useUser();
+    const router = useRouter();
     return (
         <section className="px-6">
             <div className="grid gap-12 items-center md:grid-cols-2">
@@ -20,11 +24,17 @@ function Hero() {
                         their learning journey.
                     </p>
                     <div className="flex flex-wrap items-center gap-4">
-                        <Button size="lg">
-                            Get Started
-                        </Button>
+                        {!user && (
+                            <SignInButton mode="modal">
+                                <Button size="lg">
+                                    Get Started
+                                </Button>
+                            </SignInButton>
+                        )}
+
                         <Button
                             size="lg"
+                            onClick={() => {router.push("/about-us")}}
                         >
                             Learn More
                         </Button>
