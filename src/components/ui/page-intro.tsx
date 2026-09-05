@@ -3,6 +3,11 @@
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 
+/** Session cookie set once the intro finishes (or is skipped) so the server
+ *  component can skip rendering the overlay entirely on later visits — no
+ *  flash before hydration. Clears when the browser closes (session cookie). */
+export const INTRO_COOKIE = "quizora_intro";
+
 type PageIntroProps = {
   lines: string[];
   storageKey: string;
@@ -10,27 +15,42 @@ type PageIntroProps = {
   lineDelay?: number;
   holdDelay?: number;
   fadeMs?: number;
+  /**
+   * Set server-side from INTRO_COOKIE. When true the overlay is not rendered
+   * at all, and SSR + first client render agree so there is no hydration
+   * mismatch.
+   */
+  alreadySeen?: boolean;
 };
 
 /**
  * Full-screen intro overlay that types out `lines` one by one, then fades
- * away to reveal the page. Plays only once per browser session (sessionStorage)
- * so refreshes and back/forward navigation within the same session skip it.
+ * away to reveal the page. Plays once per browser session.
  *
- * Renders an invisible (opacity-0) overlay even before hydration so there is
- * no hydration mismatch and no flash of mismatched markup.
+ * The overlay is rendered fully opaque (matching the page background) during
+ * SSR and the first client render, so the splash is visible from the very
+ * first paint and the page content never flashes in before it. Once the intro
+ * is dismissed it sets INTRO_COOKIE (a session cookie); the server reads that
+ * cookie and skips rendering the overlay on later visits.
  */
-export function PageIntro({
+export function PageIntro({ alreadySeen, ...props }: PageIntroProps) {
+  if (alreadySeen) return null;
+  return <PageIntroInner {...props} />;
+}
+
+function PageIntroInner({
   lines,
   storageKey,
   typeSpeed = 45,
   lineDelay = 450,
   holdDelay = 900,
   fadeMs = 500,
-}: PageIntroProps) {
+}: Omit<PageIntroProps, "alreadySeen">) {
   const [introLines] = useState(() => lines);
   const [typed, setTyped] = useState<string[]>(() => lines.map(() => ""));
-  const [visible, setVisible] = useState(false);
+  // Opaque from the start: matches the SSR render (so no hydration mismatch)
+  // and covers the page until the typing animation finishes.
+  const [visible, setVisible] = useState(true);
   const [removed, setRemoved] = useState(false);
 
   // Lock page scroll while the intro overlay is on screen, no matter how it
@@ -49,32 +69,43 @@ export function PageIntro({
   useEffect(() => {
     if (typeof window === "undefined") return;
     const storage = window.sessionStorage;
-    if (storage.getItem(storageKey)) {
-      queueMicrotask(() => setRemoved(true));
-      return;
-    }
-
-    let cancelled = false;
     const timers: number[] = [];
 
-    const complete = () => {
-      if (cancelled) return;
+    const dismiss = () => {
+      setVisible(false);
+      timers.push(window.setTimeout(() => setRemoved(true), fadeMs));
+    };
+
+    const markDone = () => {
       try {
         storage.setItem(storageKey, "1");
+        document.cookie = `${INTRO_COOKIE}=1; path=/; samesite=lax`;
       } catch {
         /* storage unavailable — still close the intro */
       }
-      setVisible(false);
-      timers.push(window.setTimeout(() => setRemoved(true), fadeMs));
+    };
+
+    if (storage.getItem(storageKey)) {
+      // Seen earlier this session (e.g. back/forward). Self-heal the cookie in
+      // case it was cleared mid-session, then fade out instead of popping.
+      markDone();
+      dismiss();
+      return () => {
+        timers.forEach((timer) => window.clearTimeout(timer));
+      };
+    }
+
+    let cancelled = false;
+
+    const complete = () => {
+      if (cancelled) return;
+      markDone();
+      dismiss();
     };
 
     const reducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)"
     ).matches;
-
-    requestAnimationFrame(() => {
-      if (!cancelled) setVisible(true);
-    });
 
     if (reducedMotion) {
       queueMicrotask(() => setTyped(introLines));
@@ -118,6 +149,7 @@ export function PageIntro({
     if (typeof window === "undefined") return;
     try {
       window.sessionStorage.setItem(storageKey, "1");
+      document.cookie = `${INTRO_COOKIE}=1; path=/; samesite=lax`;
     } catch {
       /* ignore */
     }
