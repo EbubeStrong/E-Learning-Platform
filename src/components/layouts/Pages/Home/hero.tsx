@@ -1,4 +1,4 @@
-
+"use client"
 import { Button } from "@/components/ui/button";
 import CardRail from "@/components/CardRail";
 import { Reveal } from "../About/reveal";
