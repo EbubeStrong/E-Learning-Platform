@@ -61,7 +61,7 @@ export default function UserDropdown() {
 
       <DropdownMenuContent
         align="start"
-        className="mt-1 w-[260px] p-1.5 z-[9999] bg-[var(--calacatta-100)] text-[var(--calacatta-800)] border-[var(--calacatta-300)] dark:bg-[var(--nero-800)] dark:text-[var(--nero-100)] dark:border-[var(--nero-500)]"
+        className="mt-1 w-[260px] p-1.5 z-[9999] bg-calacatta-100 text-calacatta-800 border-calacatta-300 dark:bg-nero-marquina-800 dark:text-nero-marquina-100 dark:border-nero-marquina-500"
       >
         <DropdownMenuLabel className="font-normal">
           <span className="block font-medium text-gray-700 text-theme-sm dark:text-gray-400">

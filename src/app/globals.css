@@ -20,6 +20,15 @@
   --color-ivory-300: var(--ivory-300);
   --color-ivory-400: var(--ivory-400);
   --color-ivory-500: var(--ivory-500);
+  --color-calacatta-marble-100: var(--calacatta-marble-100);
+  --color-calacatta-marble-200: var(--calacatta-marble-200);
+  --color-calacatta-marble-300: var(--calacatta-marble-300);
+  --color-calacatta-marble-400: var(--calacatta-marble-400);
+  --color-nero-marquina-100: var(--nero-marquina-100);
+  --color-nero-marquina-200: var(--nero-marquina-200);
+  --color-nero-marquina-300: var(--nero-marquina-300);
+  --color-nero-marquina-400: var(--nero-marquina-400);
+  --color-nero-marquina-500: var(--nero-marquina-500);
   --color-ring: var(--ring);
   --color-input: var(--input);
   --color-border: var(--border);
