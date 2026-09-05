@@ -9,15 +9,12 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-sans);
   --font-mono: var(--font-geist-mono);
-  --font-serif: var(--font-fraunces);
   --font-heading: var(--font-sans);
   --color-mocha-100: var(--mocha-100);
   --color-mocha-200: var(--mocha-200);
   --color-mocha-300: var(--mocha-300);
   --color-mocha-400: var(--mocha-400);
   --color-mocha-500: var(--mocha-500);
-  --color-mocha-600: var(--mocha-600);
-  --color-mocha-700: var(--mocha-700);
   --color-ivory-100: var(--ivory-100);
   --color-ivory-200: var(--ivory-200);
   --color-ivory-300: var(--ivory-300);
@@ -63,7 +60,7 @@
   --muted-foreground: var(--mocha-400);
   --accent: var(--ivory-300);
   --accent-foreground: var(--mocha-500);
-  --destructive: var(--mocha-400);
+  --destructive: oklch(0.577 0.245 27.325);
   --border: var(--ivory-300);
   --input: var(--ivory-300);
   --ring: var(--mocha-300);
@@ -75,121 +72,46 @@
   --mocha-300: #c7a48d;
   --mocha-400: #8b6354;
   --mocha-500: #3a2a26;
-  --mocha-600: #101828;
-  --mocha-700: #1a2231;
   /* Ivory and shades */
   --ivory-100: #f5f5dc;
   --ivory-200: #fffff0;
   --ivory-300: #d8cfc4;
   --ivory-400: #bfa6a0;
   --ivory-500: #e8d8cd;
-  /* Calacatta marble (light) */
-  --calacatta-50: #f6f4ed;
-  --calacatta-100: #ffffff;
-  --calacatta-200: #ece5d6;
-  --calacatta-300: #ddd4c2;
-  --calacatta-400: #c6b9a2;
-  --calacatta-500: #a89b83;
-  --calacatta-600: #897c69;
-  --calacatta-700: #5f5449;
-  --calacatta-800: #3b342c;
-  --calacatta-900: #262019;
+
+  /* calacatta-marble */
+  --calacatta-marble-100: #dad9d6;
+  --calacatta-marble-200: #d9dadf;
+  --calacatta-marble-300: #e5e6e1;
+  --calacatta-marble-400: #d7cdc5;
+
+  /* nero marquina */
+  --nero-marquina-100: #242b2e;
+  --nero-marquina-200: #181a1b;
+  --nero-marquina-300: #0c0d12;
+  --nero-marquina-400: #1f1618;
+  --nero-marquina-500: #040402;
 }
 
 .dark {
-  --background: var(--color-gray-900);
-  --foreground: var(--color-gray-50);
-  --card: var(--color-gray-800);
-  --card-foreground: var(--color-gray-50);
-  --popover: var(--color-gray-900);
-  --popover-foreground: var(--color-gray-50);
+  --background: var(--ivory-100);
+  --foreground: var(--ivory-200);
+  --card: var(--mocha-500);
+  --card-foreground: var(--ivory-100);
+  --popover: var(--mocha-500);
+  --popover-foreground: var(--ivory-100);
   --primary: var(--mocha-300);
   --primary-foreground: var(--mocha-500);
-  --secondary: var(--color-gray-700);
-  --secondary-foreground: var(--color-gray-50);
-  --muted: var(--color-gray-700);
-  --muted-foreground: var(--color-gray-400);
-  --accent: var(--color-gray-700);
-  --accent-foreground: var(--color-gray-50);
-  --destructive: #f97066;
-  --border: var(--color-gray-800);
-  --input: var(--color-gray-800);
-  --ring: var(--mocha-400);
-  /* Nero Marquina (dark) */
-  --nero-50: #f4f3f1;
-  --nero-100: #e7e5e1;
-  --nero-200: #c9c6bf;
-  --nero-300: #a6a39b;
-  --nero-400: #7d7b75;
-  --nero-500: #565450;
-  --nero-600: #34322e;
-  --nero-700: #232220;
-  --nero-800: #161514;
-  --nero-900: #0e0d0c;
-  --nero-950: #070605;
-}
-
-/* ===== Dashboard marble surfaces (Calacatta light / Nero Marquina dark) ===== */
-/* Scoping the dashboard with `.marble` remaps every mocha/ivory/gray token so
-   cards, borders, fills, text and semantic colors all follow the marble theme.  */
-.marble {
-  --mocha-100: var(--calacatta-100);
-  --mocha-200: var(--calacatta-200);
-  --mocha-300: var(--calacatta-300);
-  --mocha-400: var(--calacatta-600);
-  --mocha-500: var(--calacatta-800);
-  --mocha-600: var(--calacatta-900);
-  --mocha-700: var(--calacatta-900);
-  --ivory-100: var(--calacatta-50);
-  --ivory-200: var(--calacatta-50);
-  --ivory-300: var(--calacatta-300);
-  --ivory-400: var(--calacatta-400);
-  --ivory-500: var(--calacatta-200);
-  --color-white: var(--calacatta-100);
-  --color-black: var(--calacatta-800);
-  --color-gray-25: var(--calacatta-50);
-  --color-gray-50: var(--calacatta-50);
-  --color-gray-100: var(--calacatta-100);
-  --color-gray-200: var(--calacatta-200);
-  --color-gray-300: var(--calacatta-300);
-  --color-gray-400: var(--calacatta-500);
-  --color-gray-500: var(--calacatta-600);
-  --color-gray-600: var(--calacatta-700);
-  --color-gray-700: var(--calacatta-700);
-  --color-gray-800: var(--calacatta-800);
-  --color-gray-900: var(--calacatta-900);
-  --color-gray-950: var(--calacatta-900);
-  --color-gray-dark: var(--calacatta-900);
-}
-
-.dark .marble {
-  --mocha-100: var(--nero-600);
-  --mocha-200: var(--nero-700);
-  --mocha-300: var(--nero-500);
-  --mocha-400: var(--nero-300);
-  --mocha-500: var(--nero-100);
-  --mocha-600: var(--nero-100);
-  --mocha-700: var(--nero-200);
-  --ivory-100: var(--nero-900);
-  --ivory-200: var(--nero-800);
-  --ivory-300: var(--nero-500);
-  --ivory-400: var(--nero-400);
-  --ivory-500: var(--nero-700);
-  --color-white: var(--nero-50);
-  --color-black: var(--nero-900);
-  --color-gray-25: var(--nero-950);
-  --color-gray-50: var(--nero-800);
-  --color-gray-100: var(--nero-700);
-  --color-gray-200: var(--nero-600);
-  --color-gray-300: var(--nero-200);
-  --color-gray-400: var(--nero-300);
-  --color-gray-500: var(--nero-400);
-  --color-gray-600: var(--nero-400);
-  --color-gray-700: var(--nero-500);
-  --color-gray-800: var(--nero-500);
-  --color-gray-900: var(--nero-800);
-  --color-gray-950: var(--nero-900);
-  --color-gray-dark: var(--nero-900);
+  --secondary: var(--mocha-400);
+  --secondary-foreground: var(--mocha-100);
+  --muted: var(--mocha-400);
+  --muted-foreground: var(--mocha-200);
+  --accent: var(--mocha-400);
+  --accent-foreground: var(--mocha-100);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: var(--mocha-300);
+  --input: var(--mocha-300);
+  --ring: var(--mocha-300);
 }
 
 @layer base {
@@ -258,19 +180,19 @@
   --color-blue-light-900: var(--mocha-500);
   --color-blue-light-950: var(--mocha-500);
 
-  --color-gray-25: #fcfcfd;
-  --color-gray-50: #f9fafb;
-  --color-gray-100: #f2f4f7;
-  --color-gray-200: #e4e7ec;
-  --color-gray-300: #d0d5dd;
-  --color-gray-400: #98a2b3;
-  --color-gray-500: #667085;
-  --color-gray-600: #475467;
-  --color-gray-700: #344054;
-  --color-gray-800: #1d2939;
-  --color-gray-900: #101828;
-  --color-gray-950: #0c111d;
-  --color-gray-dark: #1a2231;
+  --color-gray-25: var(--ivory-100);
+  --color-gray-50: var(--ivory-200);
+  --color-gray-100: var(--ivory-100);
+  --color-gray-200: var(--ivory-300);
+  --color-gray-300: var(--ivory-400);
+  --color-gray-400: var(--mocha-300);
+  --color-gray-500: var(--mocha-400);
+  --color-gray-600: var(--mocha-500);
+  --color-gray-700: var(--mocha-500);
+  --color-gray-800: var(--mocha-500);
+  --color-gray-900: var(--mocha-500);
+  --color-gray-950: var(--mocha-500);
+  --color-gray-dark: var(--mocha-500);
 
   --color-orange-25: var(--ivory-100);
   --color-orange-50: var(--ivory-500);
@@ -422,51 +344,6 @@
   scrollbar-width: none;
 }
 
-@utility link-sweep {
-  @apply relative inline-flex w-fit;
-  &::after {
-    content: "";
-    @apply absolute inset-x-0 -bottom-1 h-px origin-left scale-x-0 bg-current transition-transform duration-300 ease-out;
-  }
-  &:hover::after,
-  &:focus-visible::after {
-    @apply scale-x-100;
-  }
-}
-
-@utility grain {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size: 160px 160px;
-}
-
-@utility animate-grain {
-  animation: grain-shift 0.9s steps(6) infinite;
-}
-
-@keyframes grain-shift {
-  0%,
-  100% {
-    background-position: 0 0;
-  }
-  20% {
-    background-position: -20% 10%;
-  }
-  40% {
-    background-position: 10% -15%;
-  }
-  60% {
-    background-position: 20% 20%;
-  }
-  80% {
-    background-position: -10% -20%;
-  }
-}
-
-.has-custom-cursor,
-.has-custom-cursor * {
-  cursor: none !important;
-}
-
 @utility custom-scrollbar {
   &::-webkit-scrollbar {
     @apply size-1.5;
@@ -482,7 +359,7 @@
 }
 
 .dark .custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: var(--color-gray-700, #344054);
+  background-color: #344054;
 }
 
 @layer utilities {
@@ -498,10 +375,6 @@
 /* ===== ApexCharts dark/light overrides ===== */
 .apexcharts-legend-text {
   @apply !text-gray-700 dark:!text-gray-400;
-}
-
-.apexcharts-text.admin-chart-label {
-  @apply !text-gray-700 dark:!text-gray-300;
 }
 
 .apexcharts-text {
