@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useContext, useEffect, useState } from "react";
-import { useMutation } from "convex/react";
+import { useConvexAuth, useMutation } from "convex/react";
 import { useUser } from "@clerk/nextjs";
 import { api } from "../../convex/_generated/api";
 import { UserDetailContext } from "@/context/UserDetailContext";
@@ -9,36 +9,33 @@ import { UserDetails } from "@/types/user";
 
 function Provider({ children }: Readonly<{ children: React.ReactNode }>) {
   const createUser = useMutation(api.users.createOrGetUser);
-  const { user, isLoaded } = useUser();
+  const { user } = useUser();
+  // isAuthenticated flips true once Convex has verified the Clerk JWT —
+  // waiting on this (not just Clerk's isLoaded) avoids calling
+  // createOrGetUser before ctx.auth.getUserIdentity() would resolve.
+  const { isAuthenticated } = useConvexAuth();
   const [userDetails, setUserDetails] = useState<UserDetails | null>(null);
 
   const createNewUser = useCallback(async () => {
     if (!user) return null;
 
+    // Only display fields go to the server now — role and email are decided
+    // there, from the verified session, not from anything the client sends.
     const result = await createUser({
-      clerkUserId: user.id,
-      email: user.primaryEmailAddress?.emailAddress ?? "",
-      imageUrl: user.imageUrl,
       name: user.fullName ?? "",
-      role:
-        user.publicMetadata?.role === "admin" ||
-        user.emailAddresses?.some((e) =>
-          e.emailAddress.endsWith("samsparko121@gmail.com")
-        )
-          ? "admin"
-          : "student",
+      imageUrl: user.imageUrl,
     });
 
     return (result ?? null) as UserDetails | null;
   }, [user, createUser]);
 
   useEffect(() => {
-    if (!isLoaded || !user) return;
+    if (!isAuthenticated || !user) return;
 
     createNewUser().then((result) => {
       if (result) setUserDetails(result);
     });
-  }, [isLoaded, user, createNewUser, setUserDetails]);
+  }, [isAuthenticated, user, createNewUser]);
 
   return (
     <UserDetailContext.Provider value={{ userDetails, setUserDetails }}>

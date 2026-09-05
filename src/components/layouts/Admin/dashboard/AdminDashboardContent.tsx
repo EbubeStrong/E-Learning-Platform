@@ -19,7 +19,7 @@ import {
   DocsIcon,
   BoltIcon,
 } from "@/icons";
-import { useQuery, useMutation } from "convex/react";
+import { useConvexAuth, useQuery, useMutation } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
 import { useUserDetails } from "@/lib/provider";
 import LessonsPerCourseChart from "@/components/layouts/Admin/charts/LessonsPerCourseChart";
@@ -42,8 +42,8 @@ function MetricCard({
         <div className="flex size-12 items-center justify-center rounded-xl bg-amber-100 dark:bg-white/10">
           <span className="size-5 text-gray-800 dark:text-white/90">{icon}</span>
         </div>
-        <div>
-          <CardTitle className="text-sm font-medium text-gray-500 dark:text-gray-400">
+        <div className="min-w-0">
+          <CardTitle className="truncate text-sm font-medium text-gray-500 dark:text-gray-400">
             {label}
           </CardTitle>
         </div>
@@ -91,29 +91,30 @@ function deriveMetrics(courses: CourseOverview[]) {
 export default function AdminDashboardContent() {
   const { userDetails } = useUserDetails();
   const adminUserId = userDetails?._id;
+  const { isAuthenticated } = useConvexAuth();
+  const adminGranted = !!adminUserId && isAuthenticated;
   const syncCatalog = useMutation(api.courses.syncFromCatalog);
 
   const courses = useQuery(api.courses.getAll);
   const analytics = useQuery(
     api.analytics.adminOverview,
-    adminUserId ? { adminUserId } : "skip"
+    adminGranted ? {} : "skip"
   );
 
   // Persist the enriched YouTube catalog into Convex once so the DB holds the
   // real videoCounts/thumbnails that back the inventory and metrics.
   useEffect(() => {
-    if (!adminUserId) return;
+    if (!adminGranted) return;
     (async () => {
       try {
         const res = await fetch("/api/courses");
         if (!res.ok) return;
         const data = (await res.json()) as {
-          courses?: (CourseOverview & { playlistId?: string })[];
+          courses?: (CourseOverview & { playlistId?: string; thumbnail?: string; imageAlt?: string })[];
         };
         const list = data.courses ?? [];
         if (list.length === 0) return;
         await syncCatalog({
-          adminUserId,
           courses: list.map((course) => ({
             courseId: course.id,
             playlistId: course.playlistId ?? "",
@@ -121,13 +122,15 @@ export default function AdminDashboardContent() {
             category: course.category,
             level: course.level,
             videoCount: course.videoCount,
+            thumbnail: course.thumbnail,
+            imageAlt: course.imageAlt,
           })),
         });
       } catch {
         // Non-fatal: the dashboard still renders whatever Convex holds.
       }
     })();
-  }, [adminUserId, syncCatalog]);
+  }, [adminGranted, syncCatalog]);
 
   const loading =
     !userDetails || courses === undefined || analytics === undefined;
@@ -161,8 +164,8 @@ export default function AdminDashboardContent() {
       {loading ? (
         <>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <Card key={i} className="border border-gray-200 bg-mocha-100 dark:border-gray-800 dark:bg-white/[0.03]">
+            {Array.from({ length: 6 }).map((_, index) => (
+              <Card key={index} className="border border-gray-200 bg-mocha-100 dark:border-gray-800 dark:bg-white/[0.03]">
                 <CardContent className="space-y-3">
                   <Skeleton className="size-10 rounded-xl" />
                   <Skeleton className="h-4 w-24" />
@@ -172,8 +175,8 @@ export default function AdminDashboardContent() {
             ))}
           </div>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6 xl:grid-cols-4">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <Card key={i} className="border border-gray-200 bg-mocha-100 dark:border-gray-800 dark:bg-white/[0.03]">
+            {Array.from({ length: 4 }).map((_, index) => (
+              <Card key={index} className="border border-gray-200 bg-mocha-100 dark:border-gray-800 dark:bg-white/[0.03]">
                 <CardContent className="space-y-3">
                   <Skeleton className="size-10 rounded-xl" />
                   <Skeleton className="h-4 w-24" />
@@ -185,7 +188,7 @@ export default function AdminDashboardContent() {
         </>
       ) : (
         <>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 xl:grid-cols-6">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
             {kpis.map((kpi) => (
               <MetricCard key={kpi.label} icon={<kpi.icon />} label={kpi.label} value={kpi.value} />
             ))}

@@ -1,13 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { useQuery } from "convex/react";
+import Image from "next/image";
+import { useConvexAuth, useQuery } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
 import { useUserDetails } from "@/lib/provider";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Clock3, PlayCircle } from "lucide-react";
 import type { Id } from "../../../../../convex/_generated/dataModel";
+import { useCatalogThumbnails } from "@/hooks/use-catalog-thumbnails";
 
 function fmt(sec: number) {
   const minutes = Math.floor(sec / 60);
@@ -20,17 +22,19 @@ function fmt(sec: number) {
 export default function DashboardCoursesPage() {
   const { userDetails } = useUserDetails();
   const userId = userDetails?._id as Id<"users"> | undefined;
+  const { isAuthenticated } = useConvexAuth();
   const courses = useQuery(api.courses.getAll);
   const progress = useQuery(
     api.watchProgress.listAllForUser,
-    userId ? { userId } : "skip"
+    userId && isAuthenticated ? {} : "skip"
   );
+  const thumbnails = useCatalogThumbnails();
 
   if (courses === undefined || (userId && progress === undefined)) {
     return (
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {Array.from({ length: 6 }).map((_, i) => (
-          <Skeleton key={i} className="h-44 rounded-3xl" />
+        {Array.from({ length: 6 }).map((_, index) => (
+          <Skeleton key={index} className="h-44 rounded-3xl" />
         ))}
       </div>
     );
@@ -69,16 +73,34 @@ export default function DashboardCoursesPage() {
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {(courses ?? []).map((course) => {
             const resume = resumeMap.get(course.courseId);
+            const coverThumb =
+              course.thumbnail ?? thumbnails?.[course.courseId]?.thumbnail;
+            const coverAlt =
+              course.imageAlt ??
+              thumbnails?.[course.courseId]?.imageAlt ??
+              `${course.title} course artwork`;
             return (
               <Link
                 key={course.courseId}
                 href={`/courses/${course.courseId}`}
                 className="group flex flex-col overflow-hidden rounded-3xl border border-mocha-300/60 bg-mocha-100 transition-all duration-300 hover:-translate-y-1 hover:shadow-md"
               >
-                <div className="flex h-28 items-center justify-center bg-gradient-to-br from-mocha-300/60 to-mocha-400/40">
-                  <span className="text-4xl font-black tracking-tight text-white/80">
-                    {course.title.charAt(0)}
-                  </span>
+                <div className="relative h-28 w-full overflow-hidden bg-gradient-to-br from-mocha-300/60 to-mocha-400/40">
+                  {coverThumb ? (
+                    <Image
+                      src={coverThumb}
+                      alt={coverAlt}
+                      fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      className="object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center">
+                      <span className="text-4xl font-black tracking-tight text-white/80">
+                        {course.title.charAt(0)}
+                      </span>
+                    </div>
+                  )}
                 </div>
                 <div className="flex flex-1 flex-col gap-2 p-5">
                   <span className="inline-flex w-fit items-center gap-1 rounded-full bg-mocha-300/40 px-2.5 py-0.5 text-xs font-medium text-mocha-500">

@@ -47,7 +47,8 @@ export async function POST(request: Request) {
   }
 
   const apiKey = process.env.RESEND_API_KEY;
-  const to = (process.env.NEXT_PUBLIC_ADMIN_EMAILS ?? "")
+  const from = process.env.RESEND_FROM_EMAIL ?? "Quizora <onboarding@resend.dev>";
+  const to = (process.env.CONTACT_RECIPIENT_EMAIL ?? "")
     .split(",")
     .map((address) => address.trim())
     .filter(Boolean);
@@ -62,15 +63,21 @@ export async function POST(request: Request) {
   const resend = new Resend(apiKey);
 
   const { error } = await resend.emails.send({
-    from: "Quizora <onboarding@resend.dev>",
+    from,
     to,
     subject: `New contact message from ${name}`,
     react: createElement(ContactEmail, { name, email, message }),
   });
 
   if (error) {
+    // Log the underlying reason (e.g. invalid API key, unverified sender
+    // domain, rate limit) so it is visible in the server logs.
+    console.error("[contact] Resend send failed:", error);
     return NextResponse.json(
-      { error: "Something went wrong. Please try again." },
+      {
+        error: "Something went wrong. Please try again.",
+        detail: process.env.NODE_ENV !== "production" ? error.message : undefined,
+      },
       { status: 500 },
     );
   }

@@ -38,6 +38,24 @@ export default function CategoryDonutChart({
       markers: { size: 6 },
       itemMargin: { horizontal: 10 },
     },
+    responsive: [
+      {
+        breakpoint: 640,
+        options: {
+          chart: { height: 260 },
+          plotOptions: {
+            pie: {
+              donut: {
+                labels: {
+                  total: { fontSize: "18px" },
+                },
+              },
+            },
+          },
+          legend: { fontSize: "12px" },
+        },
+      },
+    ],
     dataLabels: { enabled: false },
     plotOptions: {
       pie: {

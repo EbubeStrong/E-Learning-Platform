@@ -38,16 +38,16 @@ function CardRail() {
     return (
         <div className="relative pt-2">
             <div className="grid gap-4 sm:grid-cols-2 lg:flex lg:h-[460px] lg:flex-nowrap lg:items-stretch xl:h-[600px]">
-                {cards.map((card, i) => {
-                    const isOpen = active === i;
-                    const isHovered = hoveredIndex === i;
+                {cards.map((card, index) => {
+                    const isOpen = active === index;
+                    const isHovered = hoveredIndex === index;
                     return (
                         <Button
                             key={card.title}
                             type="button"
                             aria-label={`Explore ${card.title}`}
                             variant="ghost"
-                            onMouseEnter={() => setHoveredIndex(i)}
+                            onMouseEnter={() => setHoveredIndex(index)}
                             onMouseLeave={() => setHoveredIndex(null)}
                             className={`group/panel relative h-auto min-h-[220px] flex-none overflow-hidden rounded-3xl border border-ivory-300 bg-mocha-500 px-0 text-left shadow-2xl shadow-mocha-500/10 transition-[flex-grow,flex-basis] duration-500 ease-out focus-visible:ring-4 focus-visible:ring-mocha-300/50 sm:min-h-[260px] sm:w-auto sm:flex-initial lg:h-auto lg:min-w-0 lg:rounded-[2rem] ${
                                 isOpen

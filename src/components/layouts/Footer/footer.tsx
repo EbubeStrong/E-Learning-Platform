@@ -9,16 +9,11 @@ const footerLinks = {
     { label: "Take a Quiz", href: "/quizzes" },
     { label: "Quiz Categories", href: "/categories" },
     { label: "Track Progress", href: "/progress" },
-  ],
-  resources: [
-    { label: "About Us", href: "/about-us" },
-    { label: "How It Works", href: "/how-it-works" },
-    { label: "FAQs", href: "/faqs" },
+    { label: "About Us", href: "/about-us" }
   ],
   connect: [
-    { label: "Instagram", href: "#" },
-    { label: "LinkedIn", href: "#" },
-    { label: "GitHub", href: "#" },
+    { label: "LinkedIn", href: "https://www.linkedin.com/in/abrahamsamuel567/" },
+    { label: "GitHub", href: "https://github.com/EbubeStrong/" },
   ],
 };
 
@@ -69,17 +64,11 @@ export default function Footer() {
           </div>
 
           {/* Link columns */}
-          <div className="grid grid-cols-2 gap-10 sm:grid-cols-3">
+          <div className="grid grid-cols-2 gap-10">
             {/* Explore */}
             <FooterColumn
               title="Explore"
               links={footerLinks.platform}
-            />
-
-            {/* Resources */}
-            <FooterColumn
-              title="Resources"
-              links={footerLinks.resources}
             />
 
             {/* Connect */}
@@ -100,22 +89,22 @@ export default function Footer() {
           </p>
 
           <div className="flex items-center gap-5">
-            <Link
-              href="/privacy"
+            {/* <Link
+              href=""
               className="transition-colors hover:text-white"
             >
               Privacy
             </Link>
 
             <Link
-              href="/terms"
+              href=""
               className="transition-colors hover:text-white"
             >
               Terms
-            </Link>
+            </Link> */}
 
             <Link
-              href="https://github.com"
+              href="https://github.com/EbubeStrong/E-Learning-Platform"
               target="_blank"
               className="transition-colors hover:text-white"
             >
@@ -123,20 +112,13 @@ export default function Footer() {
             </Link>
 
             <Link
-              href="https://linkedin.com"
+              href="https://linkedin.com/in/abrahamsamuel567/"
               target="_blank"
               className="transition-colors hover:text-white"
             >
               <IconBrandLinkedin className="h-4 w-4" />
             </Link>
 
-            <Link
-              href="https://instagram.com"
-              target="_blank"
-              className="transition-colors hover:text-white"
-            >
-              <IconBrandInstagram className="h-4 w-4" />
-            </Link>
           </div>
         </div>
       </div>

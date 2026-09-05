@@ -86,6 +86,8 @@ export default function LessonsPerCourseChart({
     },
   ];
 
+  const chartHeight = Math.max(360, courses.length * 22);
+
   return (
     <Card className="border border-gray-200 bg-mocha-100 dark:border-gray-800 dark:bg-white/[0.03]">
       <CardHeader>
@@ -93,7 +95,7 @@ export default function LessonsPerCourseChart({
         <CardDescription>Video lessons in each playlist</CardDescription>
       </CardHeader>
       <CardContent>
-        <ReactApexChart options={options} series={series} type="bar" height={360} />
+        <ReactApexChart options={options} series={series} type="bar" height={chartHeight} />
       </CardContent>
     </Card>
   );

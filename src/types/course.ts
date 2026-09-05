@@ -98,6 +98,7 @@ export interface DetailCourse {
 /** Minimal YouTube IFrame player wrapper surfaced through player events. */
 export interface YTPlayer {
   playVideo: () => void;
+  loadVideoById: (videoId: string) => void;
   seekTo: (seconds: number, allowSeekAhead: boolean) => void;
   getCurrentTime: () => number;
   getDuration: () => number;
@@ -207,8 +208,8 @@ declare global {
           videoId: string;
           playerVars?: Record<string, string | number>;
           events?: {
-            onReady?: (e: YTPlayerEvent) => void;
-            onStateChange?: (e: YTPlayerEvent) => void;
+            onReady?: (event: YTPlayerEvent) => void;
+            onStateChange?: (event: YTPlayerEvent) => void;
           };
         }
       ) => YTPlayer;

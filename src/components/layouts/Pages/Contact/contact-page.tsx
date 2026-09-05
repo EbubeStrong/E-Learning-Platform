@@ -1,11 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import type { FormEvent } from "react";
+import type { ComponentProps } from "react";
 import {
-  AlertCircle,
   ArrowRight,
-  CheckCircle2,
   Loader2,
   Mail,
   MapPin,
@@ -16,13 +14,18 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { toast } from "@/components/ui/toast";
 import { MaskedHeading } from "../About/masked-heading";
 import { Reveal } from "../About/reveal";
 import type { SubmitState } from "@/types/ui";
 
+type ContactFormSubmitEvent = Parameters<
+  NonNullable<ComponentProps<"form">["onSubmit"]>
+>[0];
+
 const contactInfo = [
-  { icon: Mail, label: "Email", value: "hello@email.com" },
-  { icon: Phone, label: "Phone", value: "+234 XXX XXX" },
+  { icon: Mail, label: "Email", value: process.env.NEXT_PUBLIC_EMAIL },
+  { icon: Phone, label: "Phone", value: process.env.NEXT_PUBLIC_PHONE_NUMBER },
   { icon: MapPin, label: "Location", value: "Nigeria" },
 ];
 
@@ -30,16 +33,14 @@ export default function ContactPage() {
   const [senderName, setSenderName] = useState("");
   const [senderEmail, setSenderEmail] = useState("");
   const [message, setMessage] = useState("");
-  const [decoyField, setDecoyField] = useState("");
+  // const [decoyField, setDecoyField] = useState("");
   const [submitState, setSubmitState] = useState<SubmitState>("idle");
-  const [errorMessage, setErrorMessage] = useState("");
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: ContactFormSubmitEvent) {
     event.preventDefault();
     if (submitState === "sending") return;
 
     setSubmitState("sending");
-    setErrorMessage("");
 
     try {
       const res = await fetch("/api/contact", {
@@ -49,14 +50,19 @@ export default function ContactPage() {
           name: senderName,
           email: senderEmail,
           message,
-          website: decoyField,
+          // website: decoyField,
         }),
       });
       const data = (await res.json()) as { error?: string };
 
       if (!res.ok) {
         setSubmitState("error");
-        setErrorMessage(data.error ?? "Something went wrong. Please try again.");
+        toast.add({
+          type: "error",
+          title: "Couldn't send message",
+          description: data.error ?? "Something went wrong. Please try again.",
+          timeout: 6000,
+        });
         return;
       }
 
@@ -64,9 +70,19 @@ export default function ContactPage() {
       setSenderName("");
       setSenderEmail("");
       setMessage("");
+      toast.add({
+        type: "success",
+        title: "Message sent",
+        description: "Your message has been sent — we will get back to you soon.",
+      });
     } catch {
       setSubmitState("error");
-      setErrorMessage("Something went wrong. Please try again.");
+      toast.add({
+        type: "error",
+        title: "Couldn't send message",
+        description: "Something went wrong. Please try again.",
+        timeout: 6000,
+      });
     }
   }
 
@@ -106,26 +122,44 @@ export default function ContactPage() {
               </span>
 
               <div className="mt-8 flex flex-col">
-                {contactInfo.map(({ icon: Icon, label, value }, i) => (
-                  <div
-                    key={label}
-                    className={`flex items-center gap-4 py-5 ${
-                      i > 0 ? "border-t border-mocha-500/10" : ""
-                    }`}
-                  >
-                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-mocha-500/10 bg-mocha-100/40">
-                      <Icon className="h-4 w-4 text-mocha-500" />
-                    </span>
-                    <span className="flex flex-col">
-                      <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.24em] text-mocha-400">
-                        {label}
+                {contactInfo.map(({ icon: Icon, label, value }, index) => {
+                  const href =
+                    label === "Email"
+                      ? (value ? `mailto:${value}` : undefined)
+                      : label === "Phone"
+                        ? (value ? `tel:${value.replace(/\s+/g, "")}` : undefined)
+                        : undefined;
+                  const rowClass = `flex items-center gap-4 py-5 ${index > 0 ? "border-t border-mocha-500/10" : ""
+                    }`;
+                  const content = (
+                    <>
+                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-mocha-500/10 bg-mocha-100/40 transition-colors group-hover:border-mocha-500/30">
+                        <Icon className="h-4 w-4 text-mocha-500" />
                       </span>
-                      <span className="mt-1 text-base font-semibold text-mocha-500">
-                        {value}
+                      <span className="flex min-w-0 flex-col">
+                        <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.24em] text-mocha-400">
+                          {label}
+                        </span>
+                        <span className="mt-1 text-base font-semibold text-mocha-500 [overflow-wrap:anywhere]">
+                          {value}
+                        </span>
                       </span>
-                    </span>
-                  </div>
-                ))}
+                    </>
+                  );
+                  return href ? (
+                    <a
+                      key={label}
+                      href={href}
+                      className={`group ${rowClass} transition-opacity hover:opacity-80`}
+                    >
+                      {content}
+                    </a>
+                  ) : (
+                    <div key={label} className={rowClass}>
+                      {content}
+                    </div>
+                  );
+                })}
               </div>
             </div>
 
@@ -184,7 +218,7 @@ export default function ContactPage() {
                   />
                 </div>
 
-                <input
+                {/* <input
                   type="text"
                   name="website"
                   value={decoyField}
@@ -193,7 +227,7 @@ export default function ContactPage() {
                   tabIndex={-1}
                   autoComplete="off"
                   aria-hidden
-                />
+                /> */}
 
                 <Button
                   type="submit"
@@ -208,20 +242,6 @@ export default function ContactPage() {
                   Send Message
                   <ArrowRight className="h-4 w-4" />
                 </Button>
-
-                {submitState === "success" && (
-                  <p className="flex items-start gap-2 rounded-2xl border border-mocha-500/20 bg-mocha-100/60 p-4 text-sm leading-6 text-mocha-500">
-                    <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" />
-                    Your message has been sent — we will get back to you soon.
-                  </p>
-                )}
-
-                {submitState === "error" && (
-                  <p className="flex items-start gap-2 rounded-2xl border border-red-300 bg-red-50 p-4 text-sm leading-6 text-red-700">
-                    <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
-                    {errorMessage}
-                  </p>
-                )}
               </form>
             </div>
           </div>

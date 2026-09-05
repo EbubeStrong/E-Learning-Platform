@@ -69,8 +69,8 @@ function list(
     level: string;
   }
 ): CatalogCourse[] {
-  return ids.map((playlistId, i) =>
-    makeCourse(i, { playlistId, ...base })
+  return ids.map((playlistId, index) =>
+    makeCourse(index, { playlistId, ...base })
   );
 }
 
@@ -98,5 +98,5 @@ export const catalog: CatalogCourse[] = [
 ];
 
 export function getCatalogCourse(id: string): CatalogCourse | undefined {
-  return catalog.find((c) => c.id === id);
+  return catalog.find((course) => course.id === id);
 }

@@ -24,7 +24,7 @@ function FeaturedHomeCourses() {
   ));
 
   return (
-    <section className="w-full px-6 py-16 md:py-10">
+    <section className="w-full px-6 py-5 md:py-7">
       <Reveal>
       <h2 className="text-center text-2xl font-black text-mocha-500 md:text-4xl">
         Featured Courses
@@ -52,7 +52,7 @@ function HomeCourseCard({ course }: { course: HomeCourse }) {
   const Artwork = artworkMap[course.artwork];
 
   return (
-    <article className="group flex w-72 flex-col overflow-hidden rounded-3xl border border-mocha-300/60 bg-mocha-100 shadow-[0_10px_24px_rgba(58,42,38,0.06)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_36px_rgba(58,42,38,0.12)] md:w-96">
+    <article className="group flex w-[78vw] max-w-72 flex-col overflow-hidden rounded-3xl border border-mocha-300/60 bg-mocha-100 shadow-[0_10px_24px_rgba(58,42,38,0.06)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_36px_rgba(58,42,38,0.12)] sm:w-80 md:w-96">
       <div
         className={`relative h-64 overflow-hidden bg-gradient-to-br ${getCourseAccent(course.category)} md:h-72`}
       >
@@ -72,7 +72,7 @@ function HomeCourseCard({ course }: { course: HomeCourse }) {
       </div>
 
       <div className="space-y-4 p-5">
-        <h3 className="text-xl font-bold leading-tight tracking-tight text-mocha-500 md:text-2xl">
+        <h3 className="line-clamp-2 text-xl font-bold leading-tight tracking-tight text-mocha-500 md:text-2xl">
           {course.title}
         </h3>
 

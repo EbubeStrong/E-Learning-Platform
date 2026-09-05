@@ -77,7 +77,7 @@ export async function fetchPlaylistCurriculum(
       nextPageToken = data.nextPageToken;
     } while (nextPageToken);
 
-    const videoIds = items.map((i) => i.videoId);
+    const videoIds = items.map((item) => item.videoId);
     if (videoIds.length > 0) {
       const durations = new Map<string, string>();
       // YouTube's videos.list accepts at most 50 ids per request, so chunk.

@@ -1,18 +1,13 @@
 import { v } from "convex/values";
-import { mutation, query, type MutationCtx } from "./_generated/server";
-import { type Id } from "./_generated/dataModel";
+import { mutation, query } from "./_generated/server";
 import { QUESTION_BANK, QUIZ_DEFAULTS_BY_CATEGORY, resolveCategory } from "./quizData";
-
-async function isAdmin(db: MutationCtx["db"], userId: Id<"users">) {
-  const admin = await db.get(userId);
-  return !!admin && admin.role === "admin";
-}
+import { requireAdmin } from "./lib/authz";
 
 /** Deterministic 32-bit FNV-1a hash of a string. No randomness at seed time. */
-function stableHash(value: string): number {
+function stableHash(text: string): number {
   let hash = 0x811c9dc5;
-  for (let i = 0; i < value.length; i++) {
-    hash ^= value.charCodeAt(i);
+  for (let i = 0; i < text.length; i++) {
+    hash ^= text.charCodeAt(i);
     hash = Math.imul(hash, 0x01000193);
   }
   return hash >>> 0;
@@ -32,25 +27,27 @@ function drawWindow<T>(pool: T[], start: number, count: number): T[] {
 
 export const seedForCourse = mutation({
   args: { courseId: v.string(), courseCategory: v.optional(v.string()), force: v.optional(v.boolean()) },
-  handler: async (ctx, args) => {
-    const category = resolveCategory(args.courseId, args.courseCategory);
+  handler: async (context, payload) => {
+    await requireAdmin(context);
+
+    const category = resolveCategory(payload.courseId, payload.courseCategory);
     const pool = QUESTION_BANK[category];
     if (!pool) return { seeded: 0 };
     const defaults = QUIZ_DEFAULTS_BY_CATEGORY[category];
     if (!defaults) return { seeded: 0 };
 
-    if (args.force) {
-      const existing = await ctx.db
+    if (payload.force) {
+      const existing = await context.db
         .query("questions")
-        .filter((q) => q.eq(q.field("courseId"), args.courseId))
+        .filter((q) => q.eq(q.field("courseId"), payload.courseId))
         .collect();
       for (const question of existing) {
-        await ctx.db.delete(question._id);
+        await context.db.delete(question._id);
       }
     } else {
-      const existing = await ctx.db
+      const existing = await context.db
         .query("questions")
-        .filter((q) => q.eq(q.field("courseId"), args.courseId))
+        .filter((q) => q.eq(q.field("courseId"), payload.courseId))
         .first();
       if (existing) return { seeded: 0 };
     }
@@ -60,7 +57,7 @@ export const seedForCourse = mutation({
     const practicePool = pool.filter((question) => question.quizType === "practice");
     const certificationPool = pool.filter((question) => question.quizType === "certification");
 
-    const categoryCourses = await ctx.db
+    const categoryCourses = await context.db
       .query("courses")
       .filter((q) => q.eq(q.field("category"), category))
       .collect();
@@ -68,7 +65,7 @@ export const seedForCourse = mutation({
       (courseA, courseB) =>
         stableHash(courseA.courseId) - stableHash(courseB.courseId)
     );
-    const myIndex = ranked.findIndex((course) => course.courseId === args.courseId);
+    const myIndex = ranked.findIndex((course) => course.courseId === payload.courseId);
     const rank = myIndex === -1 ? 0 : myIndex;
     const courseCount = Math.max(ranked.length, 1);
 
@@ -85,8 +82,8 @@ export const seedForCourse = mutation({
       const drawn = drawWindow(slot.pool, start, quizSize);
 
       for (const question of drawn) {
-        await ctx.db.insert("questions", {
-          courseId: args.courseId,
+        await context.db.insert("questions", {
+          courseId: payload.courseId,
           quizType: question.quizType,
           prompt: question.prompt,
           options: question.options,
@@ -106,16 +103,16 @@ export const seedForCourse = mutation({
 /** Per-course question counts (practice vs certification) for the admin UI. */
 export const countsByCourse = query({
   args: {},
-  handler: async (ctx) => {
-    const all = await ctx.db.query("questions").collect();
-    const map = new Map<string, { practice: number; certification: number }>();
+  handler: async (context) => {
+    const all = await context.db.query("questions").collect();
+    const countsByCourseId = new Map<string, { practice: number; certification: number }>();
     for (const question of all) {
-      const entry = map.get(question.courseId) ?? { practice: 0, certification: 0 };
+      const entry = countsByCourseId.get(question.courseId) ?? { practice: 0, certification: 0 };
       if (question.quizType === "practice") entry.practice += 1;
       else entry.certification += 1;
-      map.set(question.courseId, entry);
+      countsByCourseId.set(question.courseId, entry);
     }
-    return Array.from(map, ([courseId, counts]) => ({ courseId, ...counts }));
+    return Array.from(countsByCourseId, ([courseId, counts]) => ({ courseId, ...counts }));
   },
 });
 
@@ -125,15 +122,21 @@ export const getForQuiz = query({
     quizType: v.union(v.literal("practice"), v.literal("certification")),
     includeAnswers: v.optional(v.boolean()),
   },
-  handler: async (ctx, args) => {
-    const questions = await ctx.db
+  handler: async (context, payload) => {
+    // includeAnswers exposes correctIndex — only ever safe for admins
+    // managing the question bank, never for a student about to take the quiz.
+    if (payload.includeAnswers) {
+      await requireAdmin(context);
+    }
+
+    const questions = await context.db
       .query("questions")
-      .filter((q) => q.eq(q.field("courseId"), args.courseId))
-      .filter((q) => q.eq(q.field("quizType"), args.quizType))
+      .filter((q) => q.eq(q.field("courseId"), payload.courseId))
+      .filter((q) => q.eq(q.field("quizType"), payload.quizType))
       .collect();
 
     return questions.map((question) => {
-      if (args.includeAnswers) {
+      if (payload.includeAnswers) {
         return question;
       }
       return {
@@ -161,22 +164,21 @@ export const adminCreate = mutation({
     category: v.optional(v.string()),
     difficulty: v.optional(v.string()),
     isCore: v.optional(v.boolean()),
-    adminUserId: v.id("users"),
   },
-  handler: async (ctx, args) => {
-    if (!(await isAdmin(ctx.db, args.adminUserId))) throw new Error("Unauthorized: admin only");
-    const id = await ctx.db.insert("questions", {
-      courseId: args.courseId,
-      quizType: args.quizType,
-      prompt: args.prompt,
-      options: args.options,
-      correctIndex: args.correctIndex,
-      explanation: args.explanation,
-      category: args.category,
-      difficulty: args.difficulty,
-      isCore: args.isCore,
+  handler: async (context, payload) => {
+    await requireAdmin(context);
+    const questionId = await context.db.insert("questions", {
+      courseId: payload.courseId,
+      quizType: payload.quizType,
+      prompt: payload.prompt,
+      options: payload.options,
+      correctIndex: payload.correctIndex,
+      explanation: payload.explanation,
+      category: payload.category,
+      difficulty: payload.difficulty,
+      isCore: payload.isCore,
     });
-    return id;
+    return questionId;
   },
 });
 
@@ -190,30 +192,29 @@ export const adminUpdate = mutation({
     category: v.optional(v.string()),
     difficulty: v.optional(v.string()),
     isCore: v.optional(v.boolean()),
-    adminUserId: v.id("users"),
   },
-  handler: async (ctx, args) => {
-    if (!(await isAdmin(ctx.db, args.adminUserId))) throw new Error("Unauthorized: admin only");
-    const existing = await ctx.db.get(args.questionId);
+  handler: async (context, payload) => {
+    await requireAdmin(context);
+    const existing = await context.db.get(payload.questionId);
     if (!existing) throw new Error("Question not found");
-    await ctx.db.patch(args.questionId, {
-      prompt: args.prompt,
-      options: args.options,
-      correctIndex: args.correctIndex,
-      explanation: args.explanation,
-      category: args.category,
-      difficulty: args.difficulty,
-      isCore: args.isCore,
+    await context.db.patch(payload.questionId, {
+      prompt: payload.prompt,
+      options: payload.options,
+      correctIndex: payload.correctIndex,
+      explanation: payload.explanation,
+      category: payload.category,
+      difficulty: payload.difficulty,
+      isCore: payload.isCore,
     });
-    return args.questionId;
+    return payload.questionId;
   },
 });
 
 export const adminDelete = mutation({
-  args: { questionId: v.id("questions"), adminUserId: v.id("users") },
-  handler: async (ctx, args) => {
-    if (!(await isAdmin(ctx.db, args.adminUserId))) throw new Error("Unauthorized: admin only");
-    await ctx.db.delete(args.questionId);
-    return args.questionId;
+  args: { questionId: v.id("questions") },
+  handler: async (context, payload) => {
+    await requireAdmin(context);
+    await context.db.delete(payload.questionId);
+    return payload.questionId;
   },
 });

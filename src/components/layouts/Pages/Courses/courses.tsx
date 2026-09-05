@@ -2,9 +2,12 @@
 
 import { useEffect, useRef, useState, type MouseEvent as ReactMouseEvent } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { SignInButton, useAuth, useClerk } from "@clerk/nextjs";
 import { Clock3, Lock, PlayCircle, Star } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Pagination,
@@ -44,7 +47,7 @@ function CoursesPage() {
   useEffect(() => {
     let active = true;
     fetch("/api/courses")
-      .then((res) => res.json())
+      .then((response) => response.json())
       .then((data: { courses?: CourseCard[] }) => {
         if (active) setCourses(data.courses ?? []);
       })
@@ -99,8 +102,8 @@ function CoursesPage() {
 
         {loading || !authLoaded ? (
           <div className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <Skeleton key={i} className="h-[22rem] rounded-3xl" />
+            {Array.from({ length: 6 }).map((_, index) => (
+              <Skeleton key={index} className="h-[22rem] rounded-3xl" />
             ))}
           </div>
         ) : courses.length === 0 ? (
@@ -116,19 +119,20 @@ function CoursesPage() {
             {!signedOut && (
               <div className="flex flex-wrap items-center justify-center gap-2">
                 {tabs.map((tab) => (
-                  <button
+                  <Button
                     key={tab}
                     type="button"
+                    variant="default"
                     onClick={() => changeTab(tab)}
                     className={cn(
                       "rounded-full px-4 py-2 text-sm font-semibold transition-colors",
                       activeTab === tab
-                        ? "bg-mocha-500 text-mocha-100"
+                        ? "bg-mocha-500 text-mocha-100 hover:bg-mocha-400"
                         : "bg-mocha-300/50 text-mocha-400 hover:bg-mocha-300/80 hover:text-mocha-500"
                     )}
                   >
                     {tab}
-                  </button>
+                  </Button>
                 ))}
               </div>
             )}
@@ -137,12 +141,13 @@ function CoursesPage() {
               <p className="mt-4 text-center text-sm text-mocha-400">
                 Showing 3 of {courses.length} courses.{" "}
                 <SignInButton mode="modal">
-                  <button
+                  <Button
                     type="button"
+                    variant="link"
                     className="font-semibold text-mocha-500 underline decoration-mocha-300 underline-offset-4 transition-colors hover:text-mocha-400"
                   >
                     Sign in
-                  </button>
+                  </Button>
                 </SignInButton>{" "}
                 to browse all courses.
               </p>
@@ -171,8 +176,8 @@ function CoursesPage() {
                     <PaginationPrevious
                       href="#"
                       aria-disabled={safePage === 1}
-                      onClick={(e) => {
-                        e.preventDefault();
+                      onClick={(event) => {
+                        event.preventDefault();
                         goToPage(safePage - 1);
                       }}
                     />
@@ -187,8 +192,8 @@ function CoursesPage() {
                         <PaginationLink
                           href="#"
                           isActive={page === safePage}
-                          onClick={(e) => {
-                            e.preventDefault();
+                          onClick={(event) => {
+                            event.preventDefault();
                             goToPage(page);
                           }}
                         >
@@ -201,8 +206,8 @@ function CoursesPage() {
                     <PaginationNext
                       href="#"
                       aria-disabled={safePage === totalPages}
-                      onClick={(e) => {
-                        e.preventDefault();
+                      onClick={(event) => {
+                        event.preventDefault();
                         goToPage(safePage + 1);
                       }}
                     />
@@ -225,9 +230,9 @@ function CourseCard({ course }: { course: CourseCard }) {
     course.tutor?.displayName ?? course.category ?? "Instructor";
   const avatar = course.tutor?.avatar;
 
-  const handleClick = (e: ReactMouseEvent<HTMLAnchorElement>) => {
+  const handleClick = (event: ReactMouseEvent<HTMLAnchorElement>) => {
     if (locked) {
-      e.preventDefault();
+      event.preventDefault();
       void clerk.openSignIn();
     }
   };
@@ -249,11 +254,12 @@ function CourseCard({ course }: { course: CourseCard }) {
         }`}
       >
         {course.thumbnail ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
+          <Image
             src={course.thumbnail}
             alt={course.imageAlt}
-            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            className="object-cover transition-transform duration-300 group-hover:scale-105"
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center">
@@ -280,29 +286,21 @@ function CourseCard({ course }: { course: CourseCard }) {
       </div>
 
       <div className="flex flex-1 flex-col space-y-3 p-5">
-        <span className="inline-flex w-fit items-center gap-1 rounded-full bg-mocha-300/40 px-2.5 py-0.5 text-xs font-medium text-mocha-500">
+        <Badge className="w-fit rounded-full bg-mocha-300/40 text-mocha-500">
           {course.category}
-        </span>
+        </Badge>
 
         <h3 className="line-clamp-2 text-lg font-bold leading-snug tracking-tight text-mocha-500">
           {course.title}
         </h3>
 
         <div className="flex items-center gap-3 text-mocha-400">
-          <div className="h-9 w-9 shrink-0 overflow-hidden rounded-full bg-mocha-300/40 text-sm font-semibold text-mocha-500">
-            {avatar ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={avatar}
-                alt={author}
-                className="h-full w-full rounded-full object-cover"
-              />
-            ) : (
-              <div className="flex h-full w-full items-center justify-center">
-                {author.charAt(0)}
-              </div>
-            )}
-          </div>
+          <Avatar size="lg" className="bg-mocha-300/40 text-sm font-semibold text-mocha-500">
+            {avatar && <AvatarImage src={avatar} alt={author} />}
+            <AvatarFallback className="bg-mocha-300/40 text-mocha-500">
+              {author.charAt(0)}
+            </AvatarFallback>
+          </Avatar>
           <span className="truncate text-base font-medium text-mocha-500">
             {author}
           </span>

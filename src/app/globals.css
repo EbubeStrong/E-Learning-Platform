@@ -83,6 +83,17 @@
   --ivory-300: #d8cfc4;
   --ivory-400: #bfa6a0;
   --ivory-500: #e8d8cd;
+  /* Calacatta marble (light) */
+  --calacatta-50: #f6f4ed;
+  --calacatta-100: #ffffff;
+  --calacatta-200: #ece5d6;
+  --calacatta-300: #ddd4c2;
+  --calacatta-400: #c6b9a2;
+  --calacatta-500: #a89b83;
+  --calacatta-600: #897c69;
+  --calacatta-700: #5f5449;
+  --calacatta-800: #3b342c;
+  --calacatta-900: #262019;
 }
 
 .dark {
@@ -104,6 +115,81 @@
   --border: var(--color-gray-800);
   --input: var(--color-gray-800);
   --ring: var(--mocha-400);
+  /* Nero Marquina (dark) */
+  --nero-50: #f4f3f1;
+  --nero-100: #e7e5e1;
+  --nero-200: #c9c6bf;
+  --nero-300: #a6a39b;
+  --nero-400: #7d7b75;
+  --nero-500: #565450;
+  --nero-600: #34322e;
+  --nero-700: #232220;
+  --nero-800: #161514;
+  --nero-900: #0e0d0c;
+  --nero-950: #070605;
+}
+
+/* ===== Dashboard marble surfaces (Calacatta light / Nero Marquina dark) ===== */
+/* Scoping the dashboard with `.marble` remaps every mocha/ivory/gray token so
+   cards, borders, fills, text and semantic colors all follow the marble theme.  */
+.marble {
+  --mocha-100: var(--calacatta-100);
+  --mocha-200: var(--calacatta-200);
+  --mocha-300: var(--calacatta-300);
+  --mocha-400: var(--calacatta-600);
+  --mocha-500: var(--calacatta-800);
+  --mocha-600: var(--calacatta-900);
+  --mocha-700: var(--calacatta-900);
+  --ivory-100: var(--calacatta-50);
+  --ivory-200: var(--calacatta-50);
+  --ivory-300: var(--calacatta-300);
+  --ivory-400: var(--calacatta-400);
+  --ivory-500: var(--calacatta-200);
+  --color-white: var(--calacatta-100);
+  --color-black: var(--calacatta-800);
+  --color-gray-25: var(--calacatta-50);
+  --color-gray-50: var(--calacatta-50);
+  --color-gray-100: var(--calacatta-100);
+  --color-gray-200: var(--calacatta-200);
+  --color-gray-300: var(--calacatta-300);
+  --color-gray-400: var(--calacatta-500);
+  --color-gray-500: var(--calacatta-600);
+  --color-gray-600: var(--calacatta-700);
+  --color-gray-700: var(--calacatta-700);
+  --color-gray-800: var(--calacatta-800);
+  --color-gray-900: var(--calacatta-900);
+  --color-gray-950: var(--calacatta-900);
+  --color-gray-dark: var(--calacatta-900);
+}
+
+.dark .marble {
+  --mocha-100: var(--nero-600);
+  --mocha-200: var(--nero-700);
+  --mocha-300: var(--nero-500);
+  --mocha-400: var(--nero-300);
+  --mocha-500: var(--nero-100);
+  --mocha-600: var(--nero-100);
+  --mocha-700: var(--nero-200);
+  --ivory-100: var(--nero-900);
+  --ivory-200: var(--nero-800);
+  --ivory-300: var(--nero-500);
+  --ivory-400: var(--nero-400);
+  --ivory-500: var(--nero-700);
+  --color-white: var(--nero-50);
+  --color-black: var(--nero-900);
+  --color-gray-25: var(--nero-950);
+  --color-gray-50: var(--nero-800);
+  --color-gray-100: var(--nero-700);
+  --color-gray-200: var(--nero-600);
+  --color-gray-300: var(--nero-200);
+  --color-gray-400: var(--nero-300);
+  --color-gray-500: var(--nero-400);
+  --color-gray-600: var(--nero-400);
+  --color-gray-700: var(--nero-500);
+  --color-gray-800: var(--nero-500);
+  --color-gray-900: var(--nero-800);
+  --color-gray-950: var(--nero-900);
+  --color-gray-dark: var(--nero-900);
 }
 
 @layer base {

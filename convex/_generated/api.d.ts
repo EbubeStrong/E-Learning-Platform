@@ -10,9 +10,11 @@
 
 import type * as analytics from "../analytics.js";
 import type * as attempts from "../attempts.js";
+import type * as attemptsLib from "../attemptsLib.js";
 import type * as certificates from "../certificates.js";
 import type * as constants from "../constants.js";
 import type * as courses from "../courses.js";
+import type * as lib_authz from "../lib/authz.js";
 import type * as questions from "../questions.js";
 import type * as quizData from "../quizData.js";
 import type * as quizzes from "../quizzes.js";
@@ -30,9 +32,11 @@ import type {
 declare const fullApi: ApiFromModules<{
   analytics: typeof analytics;
   attempts: typeof attempts;
+  attemptsLib: typeof attemptsLib;
   certificates: typeof certificates;
   constants: typeof constants;
   courses: typeof courses;
+  "lib/authz": typeof lib_authz;
   questions: typeof questions;
   quizData: typeof quizData;
   quizzes: typeof quizzes;

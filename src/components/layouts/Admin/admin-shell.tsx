@@ -1,11 +1,45 @@
 "use client";
 
-import { SidebarProvider, useSidebar } from "@/context/SidebarContext";
-import { ThemeProvider } from "@/context/ThemeContext";
-import AppHeader from "@/layout/AppHeader";
-import AppSidebar from "@/layout/AppSidebar";
-import Backdrop from "@/layout/Backdrop";
-import React from "react";
+import DashboardShell from "../DashboardShell";
+import {
+  GridIcon,
+  UserCircleIcon,
+  TaskIcon,
+  ShootingStarIcon,
+  PageIcon,
+} from "@/icons/index";
+import type { NavItem } from "@/types/navigation";
+
+const adminNavItems: NavItem[] = [
+  {
+    icon: <GridIcon />,
+    name: "Dashboard",
+    path: "/admin",
+  },
+  {
+    icon: <UserCircleIcon />,
+    name: "Users",
+    path: "/admin/users",
+  },
+  {
+    icon: <TaskIcon />,
+    name: "Questions",
+    path: "/admin/questions",
+  },
+  {
+    icon: <ShootingStarIcon />,
+    name: "Rankings",
+    path: "/admin/rankings",
+  },
+];
+
+const adminOthersItems: NavItem[] = [
+  {
+    icon: <PageIcon />,
+    name: "View Site",
+    path: "/",
+  },
+];
 
 export default function AdminShell({
   children,
@@ -13,40 +47,11 @@ export default function AdminShell({
   children: React.ReactNode;
 }) {
   return (
-    <ThemeProvider>
-      <SidebarProvider>
-        <AdminFrame>{children}</AdminFrame>
-      </SidebarProvider>
-    </ThemeProvider>
-  );
-}
-
-function AdminFrame({ children }: { children: React.ReactNode }) {
-  const { isExpanded, isHovered, isMobileOpen } = useSidebar();
-
-  // Dynamic class for main content margin based on sidebar state
-  const mainContentMargin = isMobileOpen
-    ? "ml-0"
-    : isExpanded || isHovered
-      ? "lg:ml-[290px]"
-      : "lg:ml-[90px]";
-
-  return (
-    <div className="min-h-screen xl:flex bg-gray-50 dark:bg-gray-900">
-      {/* Sidebar and Backdrop */}
-      <AppSidebar />
-      <Backdrop />
-      {/* Main Content Area */}
-      <div
-        className={`flex-1 transition-all duration-300 ease-in-out ${mainContentMargin}`}
-      >
-        {/* Header */}
-        <AppHeader />
-        {/* Page Content */}
-        <div className="mx-auto bg-mocha-200 dark:bg-gray-900 max-w-(--breakpoint-2xl) p-4 md:p-6">
-          {children}
-        </div>
-      </div>
-    </div>
+    <DashboardShell
+      navItems={adminNavItems}
+      othersItems={adminOthersItems}
+    >
+      {children}
+    </DashboardShell>
   );
 }

@@ -47,6 +47,16 @@ export interface StartPayload {
   attemptId: string;
   quiz: QuizConfig;
   questions: Question[];
+  /**
+   * Pre-selected answers from a resumed attempt (questionId -> chosenIndex).
+   * Empty for a brand-new attempt.
+   */
+  answers: Record<string, number>;
+  /**
+   * Seconds left on the overall timer. null when untimed or per-question.
+   * Anchored to the attempt's original start, so no extra time on resume.
+   */
+  overallRemainingSec: number | null;
 }
 
 export interface QuizResult {

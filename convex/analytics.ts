@@ -1,13 +1,7 @@
 import { v } from "convex/values";
 import { query, type QueryCtx } from "./_generated/server";
-import { type Id } from "./_generated/dataModel";
 import { ACTIVE_USER_WINDOW_MS } from "./constants";
-
-async function isAdmin(context: QueryCtx, userId?: Id<"users">) {
-  if (!userId) return false;
-  const user = await context.db.get(userId);
-  return !!user && user.role === "admin";
-}
+import { requireAdmin } from "./lib/authz";
 
 async function getCertificationAttempts(context: QueryCtx) {
   const attempts = await context.db
@@ -21,11 +15,9 @@ async function getCertificationAttempts(context: QueryCtx) {
  * Admin KPI summary for the dashboard overview.
  */
 export const adminOverview = query({
-  args: { adminUserId: v.optional(v.id("users")) },
-  handler: async (context, payload) => {
-    if (!(await isAdmin(context, payload.adminUserId))) {
-      throw new Error("Unauthorized: admin only");
-    }
+  args: {},
+  handler: async (context) => {
+    await requireAdmin(context);
 
     const [users, certAttempts, certs] = await Promise.all([
       context.db.query("users").collect(),
@@ -35,7 +27,7 @@ export const adminOverview = query({
 
     const scores = certAttempts.map((attempt) => attempt.percent ?? 0);
     const taken = certAttempts.length;
-    const avg = taken ? Math.round(scores.reduce((sum, score) => sum + score, 0) / taken) : 0;
+    const avg = taken ? Math.round(scores.reduce((total, percent) => total + percent, 0) / taken) : 0;
     const passed = certAttempts.filter(
       (attempt) => (attempt.percent ?? 0) >= (attempt.passThreshold ?? 0)
     ).length;
@@ -60,11 +52,9 @@ export const adminOverview = query({
  * Per-course certification performance for the admin dashboard.
  */
 export const perCoursePerformance = query({
-  args: { adminUserId: v.optional(v.id("users")) },
-  handler: async (context, payload) => {
-    if (!(await isAdmin(context, payload.adminUserId))) {
-      throw new Error("Unauthorized: admin only");
-    }
+  args: {},
+  handler: async (context) => {
+    await requireAdmin(context);
 
     const certAttempts = await getCertificationAttempts(context);
 
@@ -96,11 +86,9 @@ export const perCoursePerformance = query({
  * certificates earned per student).
  */
 export const adminLeaderboard = query({
-  args: { adminUserId: v.optional(v.id("users")), limit: v.optional(v.number()) },
+  args: { limit: v.optional(v.number()) },
   handler: async (context, payload) => {
-    if (!(await isAdmin(context, payload.adminUserId))) {
-      throw new Error("Unauthorized: admin only");
-    }
+    await requireAdmin(context);
 
     const certAttempts = await getCertificationAttempts(context);
 

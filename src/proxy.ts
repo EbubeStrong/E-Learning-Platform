@@ -3,14 +3,14 @@ import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 const isAdminRoute = createRouteMatcher(['/admin(.*)']);
 const isProtectedRoute = createRouteMatcher(['/dashboard(.*)', '/quiz(.*)']);
 
-export default clerkMiddleware(async (auth, req) => {
-  if (isAdminRoute(req)) {
+export default clerkMiddleware(async (auth, request) => {
+  if (isAdminRoute(request)) {
     const { userId, redirectToSignIn } = await auth();
     if (!userId) {
       return redirectToSignIn();
     }
   }
-  if (isProtectedRoute(req)) {
+  if (isProtectedRoute(request)) {
     const { userId, redirectToSignIn } = await auth();
     if (!userId) {
       return redirectToSignIn();

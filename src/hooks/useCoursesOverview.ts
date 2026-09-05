@@ -11,9 +11,9 @@ export function useCoursesOverview(): CoursesOverview {
   useEffect(() => {
     let active = true;
     fetch("/api/courses")
-      .then((res) => {
-        if (!res.ok) throw new Error(`Failed to load courses (${res.status})`);
-        return res.json();
+      .then((response) => {
+        if (!response.ok) throw new Error(`Failed to load courses (${response.status})`);
+        return response.json();
       })
       .then((data) => {
         if (!active) return;

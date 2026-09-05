@@ -2,55 +2,24 @@
 import React, { useEffect, useRef, useState,useCallback } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useSidebar } from "../context/SidebarContext";
-import {
-  ChevronDownIcon,
-  GridIcon,
-  HorizontaLDots,
-  PageIcon,
-  UserCircleIcon,
-  TaskIcon,
-  ShootingStarIcon,
-} from "../icons/index";
+import { useSidebar } from "../../context/SidebarContext";
+import { ChevronDownIcon, HorizontaLDots } from "../../icons/index";
 import { Logo } from "@/components/assets";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { NavItem } from "@/types/navigation";
 
-const navItems: NavItem[] = [
-  {
-    icon: <GridIcon />,
-    name: "Dashboard",
-    path: "/admin",
-  },
-  {
-    icon: <UserCircleIcon />,
-    name: "Users",
-    path: "/admin/users",
-  },
-  {
-    icon: <TaskIcon />,
-    name: "Questions",
-    path: "/admin/questions",
-  },
-  {
-    icon: <ShootingStarIcon />,
-    name: "Rankings",
-    path: "/admin/rankings",
-  },
-];
-
-const othersItems: NavItem[] = [
-  {
-    icon: <PageIcon />,
-    name: "View Site",
-    path: "/",
-  },
-];
-
-const AppSidebar: React.FC = () => {
-  const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
+const AppSidebar: React.FC<{
+  navItems: NavItem[];
+  othersItems: NavItem[];
+}> = ({ navItems, othersItems }) => {
+  const { isExpanded, isMobileOpen, isHovered, toggleMobileSidebar, setIsHovered } =
+    useSidebar();
   const pathname = usePathname();
+
+  const handleMobileNavClose = () => {
+    if (isMobileOpen) toggleMobileSidebar();
+  };
 
   const renderMenuItems = (
     navItems: NavItem[],
@@ -72,8 +41,8 @@ const AppSidebar: React.FC = () => {
                   "h-auto w-full rounded-lg px-3 py-2 text-sm font-medium",
                   isActive(nav.path ?? "") ||
                     (isSubmenuOpen &&
-                      nav.subItems.some((s) => isActive(s.path)))
-                    ? "bg-mocha-200 text-gray-800 dark:bg-white/5 dark:text-white"
+                      nav.subItems.some((subItem) => isActive(subItem.path)))
+                    ? "bg-mocha-200 text-mocha-500 dark:bg-mocha-300/50 dark:text-white"
                     : "text-gray-700 hover:bg-mocha-200 hover:text-gray-800 dark:text-gray-300 dark:hover:bg-white/5 dark:hover:text-gray-300",
                   !isExpanded && !isHovered
                     ? "lg:justify-center"
@@ -83,8 +52,8 @@ const AppSidebar: React.FC = () => {
                 <span
                   className={cn(
                     isSubmenuOpen ||
-                      (nav.subItems.some((s) => isActive(s.path)) &&
-                        "text-gray-800 dark:text-white")
+                      (nav.subItems.some((subItem) => isActive(subItem.path)) &&
+                        "text-mocha-500 dark:text-white")
                   )}
                 >
                   {nav.icon}
@@ -104,8 +73,8 @@ const AppSidebar: React.FC = () => {
 
               {(isExpanded || isHovered || isMobileOpen) && (
                 <div
-                  ref={(el) => {
-                    subMenuRefs.current[`${menuType}-${index}`] = el;
+                  ref={(element) => {
+                    subMenuRefs.current[`${menuType}-${index}`] = element;
                   }}
                   className="overflow-hidden transition-all duration-300"
                   style={{
@@ -119,11 +88,12 @@ const AppSidebar: React.FC = () => {
                       <li key={subItem.name}>
                         <Link
                           href={subItem.path}
+                          onClick={handleMobileNavClose}
                           className={cn(
                             "flex items-center gap-1 rounded-lg px-4 py-2 text-sm font-medium",
                             isActive(subItem.path)
-                              ? "bg-gray-100 text-gray-800 dark:bg-white/5 dark:text-white"
-                              : "text-gray-700 hover:bg-gray-100 hover:text-gray-800 dark:text-gray-300 dark:hover:bg-white/5 dark:hover:text-gray-300"
+                              ? "bg-mocha-200 text-mocha-500 dark:bg-mocha-300/50 dark:text-white"
+                              : "text-gray-700 hover:bg-mocha-200/60 hover:text-gray-800 dark:text-gray-300 dark:hover:bg-white/5 dark:hover:text-gray-300"
                           )}
                         >
                           {subItem.name}
@@ -154,13 +124,17 @@ const AppSidebar: React.FC = () => {
                 variant="ghost"
                 nativeButton={false}
                 render={
-                  <Link href={nav.path} data-sidebar="link" />
+                  <Link
+                    href={nav.path}
+                    data-sidebar="link"
+                    onClick={handleMobileNavClose}
+                  />
                 }
                 className={cn(
                   "h-auto w-full rounded-lg px-3 py-2 text-sm font-medium",
                   isActive(nav.path)
-                    ? "bg-gray-100 text-gray-800 dark:bg-white/5 dark:text-white"
-                    : "text-gray-700 hover:bg-gray-100 hover:text-gray-800 dark:text-gray-300 dark:hover:bg-white/5 dark:hover:text-gray-300",
+                    ? "bg-mocha-200 text-mocha-500 dark:bg-mocha-300/50 dark:text-white"
+                    : "text-gray-700 hover:bg-mocha-200 hover:text-gray-800 dark:text-gray-300 dark:hover:bg-white/5 dark:hover:text-gray-300",
                   !isExpanded && !isHovered
                     ? "lg:justify-center"
                     : "lg:justify-start"
@@ -169,7 +143,7 @@ const AppSidebar: React.FC = () => {
                 <span
                   className={cn(
                     isActive(nav.path) &&
-                      "text-gray-800 dark:text-white"
+                      "text-mocha-500 dark:text-white"
                   )}
                 >
                   {nav.icon}
@@ -222,7 +196,7 @@ const AppSidebar: React.FC = () => {
       // eslint-disable-next-line react-hooks/set-state-in-effect -- mounted-path sync
       setOpenSubmenu(null);
     }
-  }, [pathname,isActive]);
+  }, [pathname, isActive, navItems, othersItems]);
 
   useEffect(() => {
     // Set the height of the submenu items when the submenu is opened
@@ -252,7 +226,7 @@ const AppSidebar: React.FC = () => {
 
   return (
     <aside
-      className={`fixed mt-16 flex flex-col lg:mt-0 top-0 px-5 left-0 bg-mocha-100 dark:bg-gray-900 dark:border-gray-800 text-gray-900 h-screen transition-all duration-300 ease-in-out z-50 border-r border-gray-200 shadow-lg
+      className={`fixed top-0 flex flex-col px-5 left-0 bg-mocha-100 dark:bg-gray-900 dark:border-gray-800 text-gray-900 h-svh transition-all duration-300 ease-in-out z-50 border-r border-gray-200 shadow-lg
         ${
           isExpanded || isMobileOpen
             ? "w-[290px]"
@@ -270,11 +244,21 @@ const AppSidebar: React.FC = () => {
           !isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
         }`}
       >
-        <Link href="/">
+        <Link href="/" onClick={handleMobileNavClose}>
           {isExpanded || isHovered || isMobileOpen ? (
-            <Logo alt="Logo" width={150} height={40} />
+            <Logo
+              alt="Logo"
+              width={150}
+              height={40}
+              className="dark:brightness-0 dark:invert"
+            />
           ) : (
-            <Logo alt="Logo" width={32} height={32} />
+            <Logo
+              alt="Logo"
+              width={32}
+              height={32}
+              className="dark:brightness-0 dark:invert"
+            />
           )}
         </Link>
       </div>

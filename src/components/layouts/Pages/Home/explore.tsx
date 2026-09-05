@@ -65,25 +65,15 @@ const categories = [
 
 export default function ExploreCategories() {
     return (
-        <section className="mt-10 w-full px-6 py-16 md:py-20">
+        <section className="mt-6 w-full px-6 py-16 md:py-20">
             <Reveal>
             <h2 className="text-center text-3xl font-bold text-mocha-500 md:text-4xl">
                 Explore Categories
             </h2>
 
-            <p className="mt-4 text-center text-[22px] text-mocha-400">
+            <p className="mt-4 mb-7 text-center text-[22px] text-mocha-400">
                 Choose A Path And Start Your Learning Journey
             </p>
-
-            <div className="mb-8 flex items-center justify-end">
-                <Link
-                    href="#"
-                    className="inline-flex items-center gap-2 text-lg font-semibold text-mocha-400 transition hover:text-mocha-500"
-                >
-                    View All Categories
-                    <ArrowRight className="h-4 w-4" />
-                </Link>
-            </div>
             </Reveal>
 
             <Reveal delay={0.1}>

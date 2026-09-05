@@ -8,6 +8,7 @@ import Footer from "@/components/layouts/Footer/footer";
 import Cursor from "@/components/ui/cursor";
 import Grain from "@/components/layouts/Pages/About/grain";
 import { GridPattern } from "@/components/ui/grid-pattern"
+import { PageIntro } from "@/components/ui/page-intro";
 
 
 function Home() {
@@ -16,7 +17,8 @@ function Home() {
             <Header />
             <Cursor />
             <Grain />
-            <main className="relative overflow-hidden pt-7 bg-ivory-200 dark:bg-gray-600 overflow-x-hidden">
+            <PageIntro lines={["Quizora", "Your Ultimate Learning & Quiz Platform"]} storageKey="quizora:intro:home" />
+            <main className="relative overflow-hidden pt-7 bg-ivory-200 dark:bg-gray-600">
                 <GridPattern
                     // className="opacity-40"
                     width={30}
@@ -26,11 +28,9 @@ function Home() {
                     strokeDasharray={"4 2"}
                 />
                 <div className="relative z-10">
-                    <div className="px-5">
-                        <Hero />
-                        <ExploreCategories />
-                        <FeaturedHomeCourses />
-                    </div>
+                    <Hero />
+                    <ExploreCategories />
+                    <FeaturedHomeCourses />
                     <Testimonials />
                 </div>
             </main>

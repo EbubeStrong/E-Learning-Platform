@@ -27,7 +27,10 @@ export default function NotificationDropdown() {
           />
         </svg>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="mt-2 w-[350px] p-1.5" align="end">
+      <DropdownMenuContent
+        className="mt-2 w-[min(350px,calc(100vw-2rem))] p-1.5"
+        align="end"
+      >
         <DropdownMenuLabel className="text-lg font-semibold text-gray-800 dark:text-gray-200">
           Notification
         </DropdownMenuLabel>

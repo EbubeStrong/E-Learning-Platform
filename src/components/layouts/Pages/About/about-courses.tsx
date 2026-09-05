@@ -44,8 +44,8 @@ export default function AboutCourses() {
       </div>
 
       <div className="mt-12 grid gap-px overflow-hidden rounded-3xl border border-mocha-500/10 bg-mocha-500/10">
-        {homeCourses.map((course, i) => (
-          <Reveal key={course.id} delay={i * 0.08} className="bg-ivory-200">
+        {homeCourses.map((course, index) => (
+          <Reveal key={course.id} delay={index * 0.08} className="bg-ivory-200">
             <AboutCourseCard course={course} />
           </Reveal>
         ))}

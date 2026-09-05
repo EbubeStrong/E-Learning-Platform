@@ -19,7 +19,7 @@ export default function ContactEmail({ name, email, message }: ContactEmailProps
           <Heading style={heading}>New message via Quizora</Heading>
           <Text style={paragraph}>Someone reached out through the contact form on the site.</Text>
 
-          <Hr style={hr} />
+          <Hr style={divider} />
 
           <Section>
             <Text style={label}>Name</Text>
@@ -32,7 +32,7 @@ export default function ContactEmail({ name, email, message }: ContactEmailProps
             <Text style={value}>{message}</Text>
           </Section>
 
-          <Hr style={hr} />
+          <Hr style={divider} />
 
           <Text style={footer}>Sent automatically from the Quizora contact form.</Text>
         </Container>
@@ -72,7 +72,7 @@ const paragraph = {
   margin: "0",
 };
 
-const hr = {
+const divider = {
   borderColor: "#e9e2d5",
   margin: "24px 0",
 };

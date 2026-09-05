@@ -14,6 +14,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import {
   Table,
@@ -79,11 +80,11 @@ export default function AdminQuestionsContent() {
     if (!adminUserId) return;
     setIsSeeding(true);
     setSeedStatusMessage(null);
-    seedDatabase({ adminUserId })
-      .then((res) =>
-        setSeedStatusMessage(`Seeded ${res.questions} questions across ${res.courses} courses.`)
+    seedDatabase({})
+      .then((result) =>
+        setSeedStatusMessage(`Seeded ${result.questions} questions across ${result.courses} courses.`)
       )
-      .catch((e) => setSeedStatusMessage(e instanceof Error ? e.message : "Seeding failed"))
+      .catch((error) => setSeedStatusMessage(error instanceof Error ? error.message : "Seeding failed"))
       .finally(() => setIsSeeding(false));
   };
 
@@ -105,14 +106,13 @@ export default function AdminQuestionsContent() {
       options,
       correctIndex,
       isCore: questionForm.isCore,
-      adminUserId,
     })
       .then(() => {
         setSaveFeedback("Question added.");
         setQuestionForm({ prompt: "", options: "", correctIndex: "0", isCore: false });
         setIsAddQuestionFormVisible(false);
       })
-      .catch((e) => setSaveFeedback(e instanceof Error ? e.message : "Save failed"));
+      .catch((error) => setSaveFeedback(error instanceof Error ? error.message : "Save failed"));
   };
 
   const handleViewCourse = useCallback((targetCourseId: string) => {
@@ -133,14 +133,14 @@ export default function AdminQuestionsContent() {
       courseCategory: targetCourse?.category,
       force: true,
     })
-      .then((res) =>
+      .then((result) =>
         setRegenerateFeedback(
-          `Regenerated ${res.seeded} questions for ${targetCourse?.title ?? targetCourseId}.`
+          `Regenerated ${result.seeded} questions for ${targetCourse?.title ?? targetCourseId}.`
         )
       )
-      .catch((e) =>
+      .catch((error) =>
         setRegenerateFeedback(
-          e instanceof Error ? `Regenerate failed: ${e.message}` : "Regenerate failed"
+          error instanceof Error ? `Regenerate failed: ${error.message}` : "Regenerate failed"
         )
       )
       .finally(() => setRegeneratingCourseId(null));
@@ -201,8 +201,8 @@ export default function AdminQuestionsContent() {
         <CardContent className="p-5">
           {courses === undefined ? (
             <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-              {Array.from({ length: 4 }).map((_, i) => (
-                <Skeleton key={i} className="h-20 rounded-xl" />
+              {Array.from({ length: 4 }).map((_, index) => (
+                <Skeleton key={index} className="h-20 rounded-xl" />
               ))}
             </div>
           ) : courses.length === 0 ? (
@@ -212,7 +212,7 @@ export default function AdminQuestionsContent() {
           ) : (
             <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
               {courses.map((course) => {
-                const courseCounts = counts?.find((c) => c.courseId === course.courseId);
+                const courseCounts = counts?.find((count) => count.courseId === course.courseId);
                 const practiceCount = courseCounts?.practice ?? 0;
                 const certificationCount = courseCounts?.certification ?? 0;
                 const isRegenerating = regeneratingCourseId === course.courseId;
@@ -267,7 +267,7 @@ export default function AdminQuestionsContent() {
             <Label>Course</Label>
             <select
               value={courseId}
-              onChange={(e) => setCourseId(e.target.value)}
+              onChange={(event) => setCourseId(event.target.value)}
               className="mt-1 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-sm dark:border-gray-700 dark:bg-gray-900"
             >
               {(courses ?? []).map((course) => (
@@ -281,7 +281,7 @@ export default function AdminQuestionsContent() {
             <Label>Quiz type</Label>
             <select
               value={quizType}
-              onChange={(e) => setQuizType(e.target.value as "practice" | "certification")}
+              onChange={(event) => setQuizType(event.target.value as "practice" | "certification")}
               className="mt-1 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-sm dark:border-gray-700 dark:bg-gray-900"
             >
               <option value="practice">Practice</option>
@@ -289,7 +289,7 @@ export default function AdminQuestionsContent() {
             </select>
           </div>
           <div className="flex items-end">
-            <Button variant="outline" onClick={() => setIsAddQuestionFormVisible((v) => !v)} className="cursor-pointer">
+            <Button variant="outline" onClick={() => setIsAddQuestionFormVisible((isVisible) => !isVisible)} className="cursor-pointer">
               <Plus className="mr-2 h-4 w-4" /> Add question
             </Button>
           </div>
@@ -310,19 +310,19 @@ export default function AdminQuestionsContent() {
                 <Label>Prompt</Label>
                 <Input
                   value={questionForm.prompt}
-                  onChange={(e) => setQuestionForm((f) => ({ ...f, prompt: e.target.value }))}
+                  onChange={(event) => setQuestionForm((form) => ({ ...form, prompt: event.target.value }))}
                   placeholder="Question text"
                   className="mt-1"
                 />
               </div>
               <div>
                 <Label>Options (one per line)</Label>
-                <textarea
+                <Textarea
                   value={questionForm.options}
-                  onChange={(e) => setQuestionForm((f) => ({ ...f, options: e.target.value }))}
+                  onChange={(event) => setQuestionForm((form) => ({ ...form, options: event.target.value }))}
                   placeholder={"Option A\nOption B\nOption C\nOption D"}
                   rows={4}
-                  className="mt-1 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-sm dark:border-gray-700 dark:bg-gray-900"
+                  className="mt-1 w-full rounded-lg border-gray-300 bg-white px-3 py-2 dark:border-gray-700 dark:bg-gray-900"
                 />
               </div>
               <div className="grid grid-cols-2 gap-4">
@@ -331,7 +331,7 @@ export default function AdminQuestionsContent() {
                   <Input
                     type="number"
                     value={questionForm.correctIndex}
-                    onChange={(e) => setQuestionForm((f) => ({ ...f, correctIndex: e.target.value }))}
+                    onChange={(event) => setQuestionForm((form) => ({ ...form, correctIndex: event.target.value }))}
                     className="mt-1"
                   />
                 </div>
@@ -339,7 +339,7 @@ export default function AdminQuestionsContent() {
                   <input
                     type="checkbox"
                     checked={questionForm.isCore}
-                    onChange={(e) => setQuestionForm((f) => ({ ...f, isCore: e.target.checked }))}
+                    onChange={(event) => setQuestionForm((form) => ({ ...form, isCore: event.target.checked }))}
                   />
                   Core (always drawn)
                 </label>
@@ -365,8 +365,8 @@ export default function AdminQuestionsContent() {
         <CardContent className="overflow-x-auto p-0">
           {questions === undefined ? (
             <div className="space-y-3 p-5">
-              {Array.from({ length: 4 }).map((_, i) => (
-                <Skeleton key={i} className="h-10 w-full" />
+              {Array.from({ length: 4 }).map((_, index) => (
+                <Skeleton key={index} className="h-10 w-full" />
               ))}
             </div>
           ) : questions.length === 0 ? (
@@ -374,7 +374,8 @@ export default function AdminQuestionsContent() {
               No questions. Click “Seed database” or add one manually.
             </div>
           ) : (
-            <div className="min-w-[640px] px-5">
+            <>
+            <div className="hidden min-w-[640px] px-5 sm:block">
               <Table>
                 <TableHeader>
                   <TableRow className="hover:bg-transparent">
@@ -386,9 +387,9 @@ export default function AdminQuestionsContent() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {questions.map((question, i) => (
+                  {questions.map((question, index) => (
                     <TableRow key={question._id}>
-                      <TableCell className="text-gray-500">{i + 1}</TableCell>
+                      <TableCell className="text-gray-500">{index + 1}</TableCell>
                       <TableCell>
                         <p className="font-medium text-gray-800 dark:text-white/90">
                           {question.prompt}
@@ -407,28 +408,75 @@ export default function AdminQuestionsContent() {
                         {question.isCore ? <Badge>Core</Badge> : <Badge variant="outline">—</Badge>}
                       </TableCell>
                       <TableCell>
-                        <button
+                        <Button
                           type="button"
+                          variant="ghost"
+                          size="icon"
                           onClick={() =>
-                            adminUserId &&
                             deleteQuestion({
                               questionId: question._id as Id<"questions">,
-                              adminUserId,
-                            }).catch((e) =>
-                              setSaveFeedback(e instanceof Error ? e.message : "Delete failed")
+                            }).catch((error) =>
+                              setSaveFeedback(error instanceof Error ? error.message : "Delete failed")
                             )
                           }
                           className="cursor-pointer text-gray-400 hover:text-red-500"
                           aria-label="Delete question"
                         >
                           <Trash2 className="h-4 w-4" />
-                        </button>
+                        </Button>
                       </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
               </Table>
             </div>
+
+            <ul className="divide-y divide-gray-200 dark:divide-gray-800 sm:hidden">
+              {questions.map((question, index) => (
+                <li key={question._id} className="flex items-start gap-3 px-5 py-4">
+                  <span className="mt-0.5 shrink-0 text-theme-sm text-gray-500">
+                    {index + 1}
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-theme-sm font-medium text-gray-800 dark:text-white/90">
+                      {question.prompt}
+                    </p>
+                    <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1">
+                      <Badge variant="outline" className="max-w-full">
+                        <span className="truncate">
+                          {String.fromCharCode(65 + question.correctIndex)}.{" "}
+                          {question.options[question.correctIndex] ?? ""}
+                        </span>
+                      </Badge>
+                      {question.isCore ? (
+                        <Badge>Core</Badge>
+                      ) : (
+                        <Badge variant="outline">—</Badge>
+                      )}
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon-sm"
+                        onClick={() =>
+                          deleteQuestion({
+                            questionId: question._id as Id<"questions">,
+                          }).catch((error) =>
+                            setSaveFeedback(
+                              error instanceof Error ? error.message : "Delete failed"
+                            )
+                          )
+                        }
+                        className="ml-auto cursor-pointer text-gray-400 hover:text-red-500"
+                        aria-label="Delete question"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+            </>
           )}
         </CardContent>
       </Card>

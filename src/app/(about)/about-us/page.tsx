@@ -8,7 +8,7 @@ function About() {
   return (
     <>
       <Header />
-      <main className="overflow-x-hidden bg-ivory-200 p-5 dark:bg-gray-900">
+      <main className="overflow-hidden bg-ivory-200 dark:bg-gray-900">
         <AboutPage />
         <Footer />
       </main>

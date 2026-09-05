@@ -7,10 +7,10 @@ function Courses() {
   return (
     <>
       <Header />
-      <main className="p-5 overflow-x-hidden">
+      <main className="overflow-hidden">
         <CoursesPage />
-        <Footer />
       </main>
+        <Footer />
     </>
   );
 }

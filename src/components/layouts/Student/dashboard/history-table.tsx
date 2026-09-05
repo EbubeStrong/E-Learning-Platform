@@ -1,6 +1,15 @@
 "use client";
 
 import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import type { AttemptRow } from "@/types/quiz";
 
 function fmtDate(ts?: number) {
@@ -12,69 +21,147 @@ function fmtDate(ts?: number) {
   });
 }
 
-export default function HistoryTable({ attempts }: { attempts: AttemptRow[] }) {
-  if (attempts.length === 0) {
+function StatusBadge({ attempt }: { attempt: AttemptRow }) {
+  if (attempt.status !== "submitted" || attempt.percent == null) {
     return (
-      <div className="flex h-32 items-center justify-center rounded-2xl bg-mocha-200/60 text-sm text-mocha-400">
-        No quiz attempts yet.
-      </div>
+      <Badge className="rounded-full bg-mocha-300/50 text-mocha-500">
+        In progress
+      </Badge>
     );
   }
-
+  const passed = attempt.percent >= (attempt.passThreshold ?? 0);
   return (
-    <div className="overflow-hidden rounded-2xl border border-mocha-300/60 bg-mocha-100">
-      <div className="overflow-x-auto">
-        <table className="w-full text-left text-sm">
-          <thead>
-            <tr className="border-b border-mocha-300/50 text-xs uppercase tracking-wide text-mocha-400">
-              <th className="px-4 py-3 font-semibold">Quiz</th>
-              <th className="px-4 py-3 font-semibold">Type</th>
-              <th className="px-4 py-3 font-semibold">Date</th>
-              <th className="px-4 py-3 font-semibold">Score</th>
-              <th className="px-4 py-3 font-semibold">Status</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-mocha-300/40">
-            {attempts.map((attempt) => (
-              <tr key={String(attempt._id)} className="text-mocha-500">
-                <td className="max-w-[16rem] truncate px-4 py-3 font-medium">
-                  {attempt.quizTitle}
-                </td>
-                <td className="px-4 py-3">
-                  <Badge
-                    className={
-                      attempt.quizType === "certification"
-                        ? "rounded-full bg-mocha-500 text-mocha-100"
-                        : "rounded-full bg-mocha-300/60 text-mocha-500"
-                    }
-                  >
-                    {attempt.quizType}
-                  </Badge>
-                </td>
-                <td className="px-4 py-3 text-mocha-400">
-                  {fmtDate(attempt.status === "submitted" ? attempt.submittedAt : attempt.startedAt)}
-                </td>
-                <td className="px-4 py-3 font-bold">
-                  {attempt.status === "submitted" ? `${attempt.percent ?? 0}%` : "—"}
-                </td>
-                <td className="px-4 py-3">
-                  {attempt.status === "submitted" ? (
-                    <span
-                      className={`font-semibold ${
-                        (attempt.percent ?? 0) >= (attempt.passThreshold ?? 0) ? "text-green-600" : "text-mocha-400"
-                      }`}
-                    >
-                      Passed
-                    </span>
-                  ) : (
-                    <span className="font-semibold text-mocha-400">In progress</span>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+    <Badge
+      className={
+        passed
+          ? "rounded-full bg-green-100/80 text-green-700"
+          : "rounded-full bg-amber-100/80 text-amber-700"
+      }
+    >
+      {passed ? "Passed" : "Failed"}
+    </Badge>
+  );
+}
+
+export default function HistoryTable({ attempts }: { attempts: AttemptRow[] }) {
+  return (
+    <Card className="rounded-2xl border-0 bg-mocha-100 ring-mocha-300/60">
+      <div className="flex items-center justify-between gap-4 px-4 pt-4">
+        <div>
+          <h2 className="text-lg font-bold text-mocha-500">Quiz history</h2>
+          <p className="text-sm text-mocha-400">Your recent submissions</p>
+        </div>
+        <Badge className="rounded-full bg-mocha-300/50 text-mocha-500">
+          {attempts.length} total
+        </Badge>
       </div>
-    </div>
+      <CardContent className="px-4">
+        {attempts.length === 0 ? (
+          <div className="flex h-32 items-center justify-center rounded-2xl bg-mocha-200/60 text-sm text-mocha-400">
+            No quiz attempts yet.
+          </div>
+        ) : (
+          <>
+            <Table className="hidden text-left sm:table">
+              <TableHeader>
+                <TableRow className="border-mocha-300/50">
+                  <TableHead className="px-4 py-3 font-semibold uppercase tracking-wide text-mocha-400">
+                    Quiz
+                  </TableHead>
+                  <TableHead className="px-4 py-3 font-semibold uppercase tracking-wide text-mocha-400">
+                    Type
+                  </TableHead>
+                  <TableHead className="px-4 py-3 font-semibold uppercase tracking-wide text-mocha-400">
+                    Date
+                  </TableHead>
+                  <TableHead className="px-4 py-3 font-semibold uppercase tracking-wide text-mocha-400">
+                    Score
+                  </TableHead>
+                  <TableHead className="px-4 py-3 font-semibold uppercase tracking-wide text-mocha-400">
+                    Status
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody className="divide-y divide-mocha-300/40">
+                {attempts.map((attempt) => (
+                  <TableRow key={String(attempt._id)} className="text-mocha-500">
+                    <TableCell className="max-w-[16rem] truncate px-4 py-3.5 font-medium">
+                      {attempt.quizTitle}
+                    </TableCell>
+                    <TableCell className="px-4 py-3.5">
+                      <Badge
+                        className={
+                          attempt.quizType === "certification"
+                            ? "rounded-full bg-mocha-500 text-mocha-100"
+                            : "rounded-full bg-mocha-300/60 text-mocha-500"
+                        }
+                      >
+                        {attempt.quizType}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="px-4 py-3.5 text-mocha-400">
+                      {fmtDate(
+                        attempt.status === "submitted"
+                          ? attempt.submittedAt
+                          : attempt.startedAt
+                      )}
+                    </TableCell>
+                    <TableCell className="px-4 py-3.5 font-bold">
+                      {attempt.status === "submitted"
+                        ? `${attempt.percent ?? 0}%`
+                        : "—"}
+                    </TableCell>
+                    <TableCell className="px-4 py-3.5">
+                      <StatusBadge attempt={attempt} />
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+
+            <ul className="divide-y divide-mocha-300/40 sm:hidden">
+              {attempts.map((attempt) => (
+                <li
+                  key={String(attempt._id)}
+                  className="flex items-center justify-between gap-3 px-1 py-3.5"
+                >
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-semibold text-mocha-500">
+                      {attempt.quizTitle}
+                    </p>
+                    <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-mocha-400">
+                      <Badge
+                        className={
+                          attempt.quizType === "certification"
+                            ? "rounded-full bg-mocha-500 text-mocha-100"
+                            : "rounded-full bg-mocha-300/60 text-mocha-500"
+                        }
+                      >
+                        {attempt.quizType}
+                      </Badge>
+                      <span>
+                        {fmtDate(
+                          attempt.status === "submitted"
+                            ? attempt.submittedAt
+                            : attempt.startedAt
+                        )}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex shrink-0 flex-col items-end gap-1">
+                    <span className="text-sm font-bold text-mocha-500">
+                      {attempt.status === "submitted"
+                        ? `${attempt.percent ?? 0}%`
+                        : "—"}
+                    </span>
+                    <StatusBadge attempt={attempt} />
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
+      </CardContent>
+    </Card>
   );
 }

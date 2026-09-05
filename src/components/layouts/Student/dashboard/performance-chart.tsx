@@ -1,8 +1,11 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import Link from "next/link";
 import { useMemo } from "react";
 import type { AttemptRow } from "@/types/quiz";
+import { Card, CardContent } from "@/components/ui/card";
+import { useMarblePalette } from "./use-marble-palette";
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
@@ -11,6 +14,7 @@ export default function PerformanceChart({
 }: {
   attempts: AttemptRow[];
 }) {
+  const palette = useMarblePalette();
   const data = useMemo(() => {
     return [...attempts]
       .filter((attempt) => attempt.percent != null)
@@ -37,9 +41,9 @@ export default function PerformanceChart({
       type: "area" as const,
       toolbar: { show: false },
       fontFamily: "inherit",
-      foreColor: "#8a716a",
+      foreColor: palette.muted,
     },
-    colors: ["#5a3f38"],
+    colors: [palette.ink],
     stroke: { curve: "smooth" as const, width: 3 },
     fill: {
       type: "gradient",
@@ -56,17 +60,37 @@ export default function PerformanceChart({
       min: 0,
       labels: { formatter: (v: number) => `${v}%` },
     },
-    grid: { borderColor: "#e5d9d2" },
+    grid: { borderColor: palette.line },
     tooltip: { y: { formatter: (v: number) => `${v}%` } },
   };
 
-  if (data.length === 0) {
-    return (
-      <div className="flex h-56 items-center justify-center rounded-2xl bg-mocha-200/60 text-sm text-mocha-400">
-        No scores yet — take a quiz to see your performance.
+  return (
+    <Card className="rounded-2xl border-0 bg-mocha-100 ring-mocha-300/60">
+      <div className="flex items-center justify-between gap-4 px-4 pt-4">
+        <div>
+          <h2 className="text-lg font-bold text-mocha-500">
+            Performance over time
+          </h2>
+          <p className="text-sm text-mocha-400">
+            Your scores across the last {Math.max(data.length, attempts.length)} attempts
+          </p>
+        </div>
+        <Link
+          href="/dashboard/quiz"
+          className="shrink-0 text-xs font-semibold text-mocha-500 underline underline-offset-4 hover:text-mocha-400"
+        >
+          See all
+        </Link>
       </div>
-    );
-  }
-
-  return <Chart options={options} series={series} type="area" height={240} />;
+      <CardContent className="px-4">
+        {data.length === 0 ? (
+          <div className="flex h-56 items-center justify-center rounded-2xl bg-mocha-200/60 text-sm text-mocha-400">
+            No scores yet — take a quiz to see your performance.
+          </div>
+        ) : (
+          <Chart options={options} series={series} type="area" height={240} />
+        )}
+      </CardContent>
+    </Card>
+  );
 }

@@ -18,7 +18,9 @@ export async function getAdminSession(): Promise<AdminSession | null> {
   const orgMemberships = await client.users.getOrganizationMembershipList({
     userId,
   });
-  const isOrgAdmin = orgMemberships.data.some((m) => m.role === "admin");
+  const isOrgAdmin = orgMemberships.data.some(
+    (membership) => membership.role === "admin"
+  );
   const isEmailAdmin = user.emailAddresses.some((email) =>
     isAdminEmail(email.emailAddress)
   );

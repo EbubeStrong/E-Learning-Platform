@@ -2,7 +2,9 @@
 import Link from "next/link";
 import React, { useState } from "react";
 import { useClerk, useUser } from "@clerk/nextjs";
+import { ChevronDown } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,44 +28,40 @@ export default function UserDropdown() {
     .slice(0, 2)
     .toUpperCase();
 
+  const handleSignOut = async () => {
+    await signOut({ redirectUrl: "/" });
+  };
+
   return (
-    <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
+    <DropdownMenu open={isOpen} onOpenChange={setIsOpen} modal={false}>
       <DropdownMenuTrigger
-        className="flex items-center text-gray-700 outline-none dark:text-gray-400"
-      >
-        <Avatar className="mr-3 size-11">
-          {isLoaded && user?.imageUrl ? (
-            <AvatarImage src={user.imageUrl} alt="User" />
-          ) : (
-            <AvatarFallback>{initials || "?"}</AvatarFallback>
-          )}
-        </Avatar>
-        <span className="hidden mr-1 font-medium text-theme-sm sm:block">
-          {displayName}
-        </span>
-        <svg
-          className={`stroke-gray-500 dark:stroke-gray-400 transition-transform duration-200 ${
-            isOpen ? "rotate-180" : ""
-          }`}
-          width="18"
-          height="20"
-          viewBox="0 0 18 20"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M4.3125 8.65625L9 13.3437L13.6875 8.65625"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-      </DropdownMenuTrigger>
+        render={
+          <Button
+            variant="ghost"
+            className="flex h-11 items-center text-gray-700 outline-none dark:text-gray-400"
+          >
+            <Avatar className="mr-3">
+              {isLoaded && user?.imageUrl ? (
+                <AvatarImage src={user.imageUrl} alt="User"/>
+              ) : (
+                <AvatarFallback>{initials || "?"}</AvatarFallback>
+              )}
+            </Avatar>
+            <span className="mr-1 hidden font-medium text-theme-sm sm:block">
+              {displayName}
+            </span>
+            <ChevronDown
+              className={`transition-transform duration-200 ${
+                isOpen ? "rotate-180" : ""
+              }`}
+            />
+          </Button>
+        }
+      />
 
       <DropdownMenuContent
-        align="end"
-        className="mt-2 w-[260px] p-1.5"
+        align="start"
+        className="mt-1 w-[260px] p-1.5 z-[9999] bg-[var(--calacatta-100)] text-[var(--calacatta-800)] border-[var(--calacatta-300)] dark:bg-[var(--nero-800)] dark:text-[var(--nero-100)] dark:border-[var(--nero-500)]"
       >
         <DropdownMenuLabel className="font-normal">
           <span className="block font-medium text-gray-700 text-theme-sm dark:text-gray-400">
@@ -121,11 +119,13 @@ export default function UserDropdown() {
         <DropdownMenuSeparator />
         <DropdownMenuItem
           nativeButton
-          onSelect={() => {
-            void signOut();
-          }}
+          onClick={() => void handleSignOut()}
           render={
-            <button type="button" className="flex w-full items-center gap-3">
+            <Button
+              type="button"
+              variant="ghost"
+              className="flex w-full items-center justify-start gap-3"
+            >
               <svg
                 className="fill-gray-500 group-hover:fill-gray-700 dark:fill-gray-400 dark:group-hover:fill-gray-300"
                 width="20"
@@ -142,7 +142,7 @@ export default function UserDropdown() {
                 />
               </svg>
               Sign out
-            </button>
+            </Button>
           }
         />
       </DropdownMenuContent>

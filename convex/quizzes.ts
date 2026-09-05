@@ -3,6 +3,7 @@ import { mutation, query, type MutationCtx } from "./_generated/server";
 import { type Doc, type Id } from "./_generated/dataModel";
 import { QUIZ_DEFAULTS_BY_CATEGORY, resolveCategory, type QuizDefaultConfig } from "./quizData";
 import { CERTIFICATION_PASS_PERCENTAGE } from "./constants";
+import { requireAdmin } from "./lib/authz";
 
 async function ensureDefaultQuizzes(
   db: MutationCtx["db"],
@@ -53,6 +54,9 @@ async function ensureDefaultQuizzes(
 export const seedQuizzesForAll = mutation({
   args: {},
   handler: async (context) => {
+    // Previously public — anyone could reseed every course's quiz config.
+    await requireAdmin(context);
+
     const courses = await context.db.query("courses").collect();
     for (const course of courses) {
       await ensureDefaultQuizzes(context.db, course, true);
@@ -135,13 +139,9 @@ export const adminUpsert = mutation({
     perQuestionSeconds: v.optional(v.number()),
     passThreshold: v.optional(v.number()),
     enabled: v.optional(v.boolean()),
-    adminUserId: v.id("users"),
   },
   handler: async (context, payload) => {
-    const admin = await context.db.get(payload.adminUserId);
-    if (!admin || admin.role !== "admin") {
-      throw new Error("Unauthorized: admin only");
-    }
+    const admin = await requireAdmin(context);
 
     const existing = await context.db
       .query("quizzes")
@@ -157,7 +157,7 @@ export const adminUpsert = mutation({
       perQuestionSeconds: payload.perQuestionSeconds ?? Math.round((payload.timeLimitSeconds ?? 0) / payload.totalQuestions),
       passThreshold: payload.passThreshold ?? (payload.type === "certification" ? CERTIFICATION_PASS_PERCENTAGE : 0),
       enabled: payload.enabled ?? true,
-      updatedBy: payload.adminUserId,
+      updatedBy: admin._id,
       updatedAt: Date.now(),
     };
 

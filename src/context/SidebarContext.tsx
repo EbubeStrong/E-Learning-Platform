@@ -1,5 +1,6 @@
 "use client";
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { useIsDesktop } from "@/hooks/use-is-desktop";
 import type { SidebarContextType } from "@/types/context";
 
 const SidebarContext = createContext<SidebarContextType | undefined>(undefined);
@@ -17,27 +18,17 @@ export const SidebarProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [isExpanded, setIsExpanded] = useState(true);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
+  const isMobile = !useIsDesktop();
   const [isHovered, setIsHovered] = useState(false);
   const [activeItem, setActiveItem] = useState<string | null>(null);
   const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
 
   useEffect(() => {
-    const handleResize = () => {
-      const mobile = window.innerWidth < 768;
-      setIsMobile(mobile);
-      if (!mobile) {
-        setIsMobileOpen(false);
-      }
-    };
-
-    handleResize();
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
+    if (!isMobile) {
+      const timer = setTimeout(() => setIsMobileOpen(false), 0);
+      return () => clearTimeout(timer);
+    }
+  }, [isMobile]);
 
   const toggleSidebar = () => {
     setIsExpanded((prev) => !prev);

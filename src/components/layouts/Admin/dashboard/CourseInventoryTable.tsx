@@ -34,7 +34,7 @@ export default function CourseInventoryTable({
       </CardHeader>
 
       <CardContent className="overflow-x-auto p-0">
-        <div className="min-w-[760px] px-5">
+        <div className="hidden min-w-[760px] px-5 sm:block">
           <Table>
             <TableHeader>
               <TableRow className="hover:bg-transparent">
@@ -84,6 +84,35 @@ export default function CourseInventoryTable({
             </TableBody>
           </Table>
         </div>
+
+        <ul className="divide-y divide-gray-200 dark:divide-gray-800 sm:hidden">
+          {courses.map((course) => (
+            <li key={course.id}>
+              <Link
+                href={`/courses/${course.id}`}
+                className="flex items-center gap-3 px-5 py-4 group"
+              >
+                <div
+                  className={`flex w-10 h-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${getCourseAccent(course.category)} text-white font-semibold`}
+                >
+                  {course.title.charAt(0)}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <span className="block truncate font-medium text-gray-800 dark:text-white/90 group-hover:text-brand-500">
+                    {course.title}
+                  </span>
+                  <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-theme-xs text-gray-500 dark:text-gray-400">
+                    <span>{course.category}</span>
+                    <span aria-hidden>·</span>
+                    <Badge variant="outline">{course.level}</Badge>
+                    <span aria-hidden>·</span>
+                    <span>{course.videoCount} lessons</span>
+                  </div>
+                </div>
+              </Link>
+            </li>
+          ))}
+        </ul>
       </CardContent>
     </Card>
   );

@@ -34,7 +34,7 @@ export default function AboutPage() {
 
         <div className="mt-10 max-w-5xl">
           <MaskedHeading
-            className="text-5xl font-black leading-[1.02] tracking-tight text-mocha-500 md:text-7xl lg:text-8xl"
+            className="text-4xl font-black leading-[1.02] tracking-tight text-mocha-500 sm:text-5xl md:text-7xl lg:text-8xl"
             lines={[
               { text: "We built a platform" },
               { text: "with an" },
@@ -149,8 +149,8 @@ export default function AboutPage() {
         </Reveal>
 
         <div className="mt-10 grid gap-px overflow-hidden rounded-3xl border border-mocha-500/10 bg-mocha-500/10 sm:grid-cols-2">
-          {values.map((value, i) => (
-            <Reveal key={value.index} delay={i * 0.06} className="bg-ivory-200">
+          {values.map((value, index) => (
+            <Reveal key={value.index} delay={index * 0.06} className="bg-ivory-200">
               <div className="flex h-full flex-col gap-4 p-8 transition-colors duration-300 hover:bg-mocha-100/50 md:p-10">
                 <span className="font-mono text-xs text-mocha-400">{value.index}</span>
                 <h3 className="text-xl font-black tracking-tight text-mocha-500 md:text-2xl">

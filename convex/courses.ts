@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
+import { requireAdmin } from "./lib/authz";
 
 function slugify(title: string, index: number): string {
   const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
@@ -23,6 +24,10 @@ function courseInput() {
 export const seedCourses = mutation({
   args: { courses: v.optional(v.array(courseInput())) },
   handler: async (context, payload) => {
+    // Was previously callable by anyone, bypassing seed.seedAll's admin
+    // check entirely since this mutation is independently exported.
+    await requireAdmin(context);
+
     const list = payload.courses;
     if (list && list.length > 0) {
       let inserted = 0;
@@ -84,12 +89,9 @@ export const seedCourses = mutation({
  * thumbnails. Safe to re-run anytime — existing rows are patched.
  */
 export const syncFromCatalog = mutation({
-  args: { adminUserId: v.id("users"), courses: v.array(courseInput()) },
+  args: { courses: v.array(courseInput()) },
   handler: async (context, payload) => {
-    const admin = await context.db.get(payload.adminUserId);
-    if (!admin || admin.role !== "admin") {
-      throw new Error("Unauthorized: admin only");
-    }
+    await requireAdmin(context);
 
     for (const course of payload.courses) {
       const existing = await context.db
@@ -97,7 +99,7 @@ export const syncFromCatalog = mutation({
         .filter((q) => q.eq(q.field("courseId"), course.courseId))
         .first();
 
-      const map = {
+      const courseFields = {
         playlistId: course.playlistId,
         title: course.title,
         category: course.category,
@@ -108,11 +110,11 @@ export const syncFromCatalog = mutation({
       };
 
       if (existing) {
-        await context.db.patch(existing._id, map);
+        await context.db.patch(existing._id, courseFields);
       } else {
         await context.db.insert("courses", {
           courseId: course.courseId,
-          ...map,
+          ...courseFields,
         });
       }
     }

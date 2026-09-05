@@ -32,6 +32,7 @@ function DropdownMenuContent({
         alignOffset={alignOffset}
         collisionPadding={collisionPadding}
         sideOffset={sideOffset}
+        className="z-[99999]"
       >
         <DropdownMenuPrimitive.Popup
           data-slot="dropdown-menu-content"

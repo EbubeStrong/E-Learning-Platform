@@ -4,6 +4,10 @@ declare module "*.svg" {
   export const ReactComponent: React.FunctionComponent<
     React.SVGProps<SVGSVGElement> & { title?: string }
   >;
-  const src: string;
-  export default src;
+  // SVGs are loaded via @svgr/webpack, so the default export is a React
+  // component (accepting className and other SVG props), not a string.
+  const ReactComponentDefault: React.FunctionComponent<
+    React.SVGProps<SVGSVGElement> & { title?: string }
+  >;
+  export default ReactComponentDefault;
 }

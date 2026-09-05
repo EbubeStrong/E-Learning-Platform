@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery } from "convex/react";
+import { useConvexAuth, useQuery } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
 import { useUserDetails } from "@/lib/provider";
 import { Badge } from "@/components/ui/badge";
@@ -11,13 +11,17 @@ import type { Id } from "../../../../../convex/_generated/dataModel";
 export default function CertificationPage() {
   const { userDetails } = useUserDetails();
   const userId = userDetails?._id as Id<"users"> | undefined;
-  const certs = useQuery(api.certificates.list, userId ? { userId } : "skip");
+  const { isAuthenticated } = useConvexAuth();
+  const certs = useQuery(
+    api.certificates.list,
+    userId && isAuthenticated ? {} : "skip"
+  );
 
   if (certs === undefined) {
     return (
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-        {Array.from({ length: 2 }).map((_, i) => (
-          <Skeleton key={i} className="h-52 rounded-3xl" />
+        {Array.from({ length: 2 }).map((_, index) => (
+          <Skeleton key={index} className="h-52 rounded-3xl" />
         ))}
       </div>
     );

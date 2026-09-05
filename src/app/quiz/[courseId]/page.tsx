@@ -10,5 +10,9 @@ export default function QuizPage() {
     | "practice"
     | "certification";
 
-  return <QuizEngine courseId={courseId} type={type} />;
+  return (
+    <div className="marble min-h-screen">
+      <QuizEngine courseId={courseId} type={type} />
+    </div>
+  );
 }
