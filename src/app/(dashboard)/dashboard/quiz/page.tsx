@@ -138,7 +138,7 @@ export default function QuizCatalogPage() {
                         time: certificationQuiz.timeLimitSeconds,
                       }}
                       badge="Certification"
-                      badgeClass="bg-mocha-500 text-mocha-100"
+                      badgeClass="bg-mocha-300 text-mocha-500"
                       disabled={certLocked}
                       resume={certInProgress}
                       footer={

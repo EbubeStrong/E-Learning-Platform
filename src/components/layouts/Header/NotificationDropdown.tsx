@@ -11,7 +11,7 @@ import {
 export default function NotificationDropdown() {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="relative flex h-11 w-11 items-center justify-center rounded-full border border-gray-200 bg-mocha-100 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:border-gray-800 dark:bg-white/[0.03] dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white">
+      <DropdownMenuTrigger className="relative flex h-11 w-11 items-center justify-center rounded-full border border-gray-200 bg-mocha-100 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:border-nero-marquina-100 dark:bg-nero-marquina-200 dark:text-gray-400 dark:hover:bg-nero-marquina-100 dark:hover:text-white">
         <svg
           className="fill-current"
           width="20"
@@ -36,7 +36,7 @@ export default function NotificationDropdown() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <div className="flex flex-col items-center justify-center gap-3 py-10 text-center">
-          <span className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800">
+          <span className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-100 dark:bg-nero-marquina-200">
             <svg
               className="fill-gray-400"
               width="24"
@@ -58,7 +58,7 @@ export default function NotificationDropdown() {
         </div>
         <Link
           href="/"
-          className="block rounded-md border border-gray-300 bg-mocha-100 px-4 py-2 text-center text-sm font-medium text-gray-700 hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300"
+          className="block rounded-md border border-gray-300 bg-mocha-100 px-4 py-2 text-center text-sm font-medium text-gray-700 hover:bg-gray-100 dark:border-nero-marquina-100 dark:bg-nero-marquina-200 dark:text-gray-400 dark:hover:bg-nero-marquina-100 dark:hover:text-gray-300"
         >
           View All Notifications
         </Link>

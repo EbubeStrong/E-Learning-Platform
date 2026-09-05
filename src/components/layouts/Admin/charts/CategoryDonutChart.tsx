@@ -16,7 +16,7 @@ const ReactApexChart = dynamic(() => import("react-apexcharts"), {
 
 // const PALETTE = ["#bfa6a0", "#d8cfc4", "#e8d8cd", "#f5f5dc"];
 
-export default function CategoryDonutChart({
+export default function CategoryChart({
   categories,
 }: {
   categories: { name: string; count: number }[];
@@ -73,13 +73,13 @@ export default function CategoryDonutChart({
         },
       },
     },
-    stroke: { width: 3, colors: [isDark ? "#1d2939" : "#fff4e6"] },
+    stroke: { width: 3, colors: [isDark ? "#242b2e" : "#f5f5dc"] },
   };
 
   const series = categories.map((category) => category.count);
 
   return (
-    <Card className="border border-gray-200 bg-mocha-100 h-fit dark:border-gray-800 dark:bg-white/[0.03]">
+    <Card className="border border-gray-200 bg-ivory-100/50 h-fit dark:border-nero-marquina-100 dark:bg-nero-marquina-200">
       <CardHeader>
         <CardTitle className="text-lg">Courses by category</CardTitle>
         <CardDescription>Distribution across topic areas</CardDescription>

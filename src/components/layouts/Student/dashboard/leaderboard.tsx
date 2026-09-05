@@ -17,7 +17,7 @@ export default function Leaderboard() {
 
   if (rows === undefined) {
     return (
-      <Card className="rounded-2xl border-0 bg-mocha-100 ring-mocha-300/60">
+      <Card className="rounded-2xl border-0 bg-calacatta-marble-100 dark:bg-nero-marquina-200 ring-mocha-300/60">
         <div className="px-4 pt-4">
           <h2 className="text-lg font-bold text-mocha-500">Leaderboard</h2>
           <p className="text-sm text-mocha-400">Top performers this term</p>
@@ -32,7 +32,7 @@ export default function Leaderboard() {
   }
 
   return (
-    <Card className="rounded-2xl border-0 bg-mocha-100 ring-mocha-300/60">
+    <Card className="rounded-2xl h-full border-0 bg-ivory-100/30 dark:bg-nero-marquina-200 ring-mocha-300/60">
       <div className="flex items-center justify-between gap-4 px-4 pt-4">
         <div>
           <h2 className="text-lg font-bold text-mocha-500">Leaderboard</h2>
@@ -55,7 +55,7 @@ export default function Leaderboard() {
                   className={cn(
                     "flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold",
                     index === 0
-                      ? "bg-yellow-400 text-mocha-500"
+                      ? "bg-amber-300 text-amber-900"
                       : index === 1
                         ? "bg-mocha-300 text-mocha-500"
                         : index === 2

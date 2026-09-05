@@ -30,7 +30,7 @@ export default function Deadlines() {
 
   if (deadlines === undefined) {
     return (
-      <Card className="rounded-2xl border-0 bg-mocha-100 ring-mocha-300/60">
+      <Card className="rounded-2xl border-0 bg-ivory-100 dark:bg-nero-marquina-200 ring-mocha-300/60">
         <div className="px-4 pt-4">
           <h2 className="text-lg font-bold text-mocha-500">
             Upcoming deadlines
@@ -50,7 +50,7 @@ export default function Deadlines() {
   const expired = deadlines.filter((deadline) => deadline.expired);
 
   return (
-    <Card className="rounded-2xl border-0 bg-mocha-100 ring-mocha-300/60">
+    <Card className="rounded-2xl border-0 bg-transparent h-full dark:bg-nero-marquina-200 ring-mocha-300/60">
       <div className="flex items-center justify-between gap-4 px-4 pt-4">
         <div>
           <h2 className="text-lg font-bold text-mocha-500">

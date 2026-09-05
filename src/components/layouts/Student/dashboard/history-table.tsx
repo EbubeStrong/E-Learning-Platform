@@ -45,7 +45,7 @@ function StatusBadge({ attempt }: { attempt: AttemptRow }) {
 
 export default function HistoryTable({ attempts }: { attempts: AttemptRow[] }) {
   return (
-    <Card className="rounded-2xl border-0 bg-mocha-100 ring-mocha-300/60">
+    <Card className="rounded-2xl border-0 bg-ivory-100/30 dark:bg-nero-marquina-200 ring-mocha-300/60">
       <div className="flex items-center justify-between gap-4 px-4 pt-4">
         <div>
           <h2 className="text-lg font-bold text-mocha-500">Quiz history</h2>
@@ -92,7 +92,7 @@ export default function HistoryTable({ attempts }: { attempts: AttemptRow[] }) {
                       <Badge
                         className={
                           attempt.quizType === "certification"
-                            ? "rounded-full bg-mocha-500 text-mocha-100"
+                            ? "rounded-full bg-mocha-300 text-mocha-500"
                             : "rounded-full bg-mocha-300/60 text-mocha-500"
                         }
                       >
@@ -133,7 +133,7 @@ export default function HistoryTable({ attempts }: { attempts: AttemptRow[] }) {
                       <Badge
                         className={
                           attempt.quizType === "certification"
-                            ? "rounded-full bg-mocha-500 text-mocha-100"
+                            ? "rounded-full bg-mocha-300 text-mocha-500"
                             : "rounded-full bg-mocha-300/60 text-mocha-500"
                         }
                       >

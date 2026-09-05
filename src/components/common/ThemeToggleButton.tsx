@@ -10,7 +10,7 @@ export const ThemeToggleButton: React.FC = () => {
       onClick={toggleTheme}
       variant="outline"
       size="icon"
-      className="h-11 w-11 rounded-full border border-gray-200 bg-mocha-100 text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-800 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white"
+      className="h-11 w-11 rounded-full border border-gray-200 bg-mocha-100 text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:border-nero-marquina-100 dark:bg-nero-marquina-200 dark:text-gray-400 dark:hover:bg-nero-marquina-100 dark:hover:text-white"
       aria-label="Toggle theme"
     >
       <svg

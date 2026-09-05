@@ -268,7 +268,7 @@ export default function AdminQuestionsContent() {
             <select
               value={courseId}
               onChange={(event) => setCourseId(event.target.value)}
-              className="mt-1 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-sm dark:border-gray-700 dark:bg-gray-900"
+              className="mt-1 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-sm dark:border-nero-marquina-100 dark:bg-nero-marquina-300"
             >
               {(courses ?? []).map((course) => (
                 <option key={course.courseId} value={course.courseId}>
@@ -282,7 +282,7 @@ export default function AdminQuestionsContent() {
             <select
               value={quizType}
               onChange={(event) => setQuizType(event.target.value as "practice" | "certification")}
-              className="mt-1 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-sm dark:border-gray-700 dark:bg-gray-900"
+              className="mt-1 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-sm dark:border-nero-marquina-100 dark:bg-nero-marquina-300"
             >
               <option value="practice">Practice</option>
               <option value="certification">Certification</option>
@@ -322,7 +322,7 @@ export default function AdminQuestionsContent() {
                   onChange={(event) => setQuestionForm((form) => ({ ...form, options: event.target.value }))}
                   placeholder={"Option A\nOption B\nOption C\nOption D"}
                   rows={4}
-                  className="mt-1 w-full rounded-lg border-gray-300 bg-white px-3 py-2 dark:border-gray-700 dark:bg-gray-900"
+                  className="mt-1 w-full rounded-lg border-gray-300 bg-white px-3 py-2 dark:border-nero-marquina-100 dark:bg-nero-marquina-300"
                 />
               </div>
               <div className="grid grid-cols-2 gap-4">

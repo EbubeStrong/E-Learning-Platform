@@ -89,7 +89,7 @@ export default function LessonsPerCourseChart({
   const chartHeight = Math.max(360, courses.length * 22);
 
   return (
-    <Card className="border border-gray-200 bg-mocha-100 dark:border-gray-800 dark:bg-white/[0.03]">
+    <Card className="border border-gray-200 bg-ivory-100/50 dark:border-nero-marquina-100 dark:bg-nero-marquina-200">
       <CardHeader>
         <CardTitle className="text-lg">Lessons per course</CardTitle>
         <CardDescription>Video lessons in each playlist</CardDescription>

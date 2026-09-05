@@ -50,7 +50,7 @@ export default function StudentShell({
     <DashboardShell
       navItems={studentNavItems}
       othersItems={studentOthersItems}
-      contentClassName="bg-ivory-200 dark:bg-gray-900"
+      contentClassName="bg-ivory-200 dark:bg-nero-marquina-300"
     >
       {children}
     </DashboardShell>

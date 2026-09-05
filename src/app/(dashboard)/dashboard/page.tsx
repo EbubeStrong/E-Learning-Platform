@@ -183,7 +183,7 @@ export default function DashboardOverviewPage() {
         {cards.map((card) => (
           <div
             key={card.label}
-            className="col-span-12 rounded-2xl border border-mocha-300/60 bg-mocha-100 p-5 shadow-sm sm:col-span-6 lg:col-span-3 xl:col-span-2"
+            className="col-span-12 rounded-2xl border border-mocha-300/60 bg-ivory-100 dark:bg-nero-marquina-200 p-5 shadow-sm sm:col-span-6 lg:col-span-3 xl:col-span-2"
           >
             <div className="flex items-start justify-between gap-2">
               <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-mocha-300/40">

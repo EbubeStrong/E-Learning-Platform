@@ -23,7 +23,7 @@ import { useConvexAuth, useQuery, useMutation } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
 import { useUserDetails } from "@/lib/provider";
 import LessonsPerCourseChart from "@/components/layouts/Admin/charts/LessonsPerCourseChart";
-import CategoryDonutChart from "@/components/layouts/Admin/charts/CategoryDonutChart";
+import CategoryChart from "@/components/layouts/Admin/charts/CategoryDonutChart";
 import CourseInventoryTable from "@/components/layouts/Admin/dashboard/CourseInventoryTable";
 import type { CourseOverview } from "@/types/course";
 
@@ -37,19 +37,19 @@ function MetricCard({
   value: string | number;
 }) {
   return (
-    <Card className="border border-gray-200 bg-mocha-100 dark:border-gray-800 dark:bg-white/[0.03]">
+    <Card className="border border-gray-200 bg-ivory-100/30 dark:border-nero-marquina-100 dark:bg-nero-marquina-200">
       <CardHeader className="flex-row items-center gap-3">
         <div className="flex size-12 items-center justify-center rounded-xl bg-amber-100 dark:bg-white/10">
-          <span className="size-5 text-gray-800 dark:text-white/90">{icon}</span>
+          <span className="size-5 text-mocha-500">{icon}</span>
         </div>
         <div className="min-w-0">
-          <CardTitle className="truncate text-sm font-medium text-gray-500 dark:text-gray-400">
+          <CardTitle className="truncate text-sm font-medium text-mocha-400">
             {label}
           </CardTitle>
         </div>
       </CardHeader>
       <CardContent>
-        <span className="text-3xl font-bold text-gray-800 dark:text-white/90">
+        <span className="text-3xl font-bold text-mocha-500">
           {value}
         </span>
       </CardContent>
@@ -153,10 +153,10 @@ export default function AdminDashboardContent() {
   return (
     <div className="grid grid-cols-1 gap-4 md:gap-6">
       <div>
-        <h2 className="text-xl font-semibold text-gray-800 dark:text-white/90">
+        <h2 className="text-xl font-semibold text-mocha-500">
           Course Catalog Overview
         </h2>
-        <p className="mt-1 text-theme-sm text-gray-500 dark:text-gray-400">
+        <p className="mt-1 text-theme-sm text-mocha-400">
           Live summary of the playlists behind your learning platform.
         </p>
       </div>
@@ -165,7 +165,7 @@ export default function AdminDashboardContent() {
         <>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
             {Array.from({ length: 6 }).map((_, index) => (
-              <Card key={index} className="border border-gray-200 bg-mocha-100 dark:border-gray-800 dark:bg-white/[0.03]">
+              <Card key={index} className="border border-gray-200 bg-ivory-100/30 dark:border-nero-marquina-100 dark:bg-nero-marquina-200">
                 <CardContent className="space-y-3">
                   <Skeleton className="size-10 rounded-xl" />
                   <Skeleton className="h-4 w-24" />
@@ -176,7 +176,7 @@ export default function AdminDashboardContent() {
           </div>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6 xl:grid-cols-4">
             {Array.from({ length: 4 }).map((_, index) => (
-              <Card key={index} className="border border-gray-200 bg-mocha-100 dark:border-gray-800 dark:bg-white/[0.03]">
+              <Card key={index} className="border border-gray-200 bg-ivory-100/30 dark:border-nero-marquina-100 dark:bg-nero-marquina-200">
                 <CardContent className="space-y-3">
                   <Skeleton className="size-10 rounded-xl" />
                   <Skeleton className="h-4 w-24" />
@@ -205,7 +205,7 @@ export default function AdminDashboardContent() {
             <div className="xl:col-span-2">
               <LessonsPerCourseChart courses={ordered} />
             </div>
-            <CategoryDonutChart categories={metrics.categories} />
+            <CategoryChart categories={metrics.categories} />
           </div>
 
           <CourseInventoryTable courses={ordered} />

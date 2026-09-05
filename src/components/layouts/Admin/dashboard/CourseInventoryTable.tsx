@@ -25,7 +25,7 @@ export default function CourseInventoryTable({
   courses: CourseOverview[];
 }) {
   return (
-    <Card className="border border-gray-200 bg-mocha-100 dark:border-gray-800 dark:bg-white/[0.03]">
+    <Card className="border border-gray-200 bg-ivory-100/30 dark:border-nero-marquina-100 dark:bg-nero-marquina-200">
       <CardHeader>
         <CardTitle className="text-lg">Course inventory</CardTitle>
         <CardDescription>
@@ -38,16 +38,16 @@ export default function CourseInventoryTable({
           <Table>
             <TableHeader>
               <TableRow className="hover:bg-transparent">
-                <TableHead className="px-5 py-3 font-medium text-gray-500 dark:text-gray-400">
+                <TableHead className="px-5 py-3 font-medium text-mocha-400">
                   Course
                 </TableHead>
-                <TableHead className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">
+                <TableHead className="px-4 py-3 font-medium text-mocha-400">
                   Category
                 </TableHead>
-                <TableHead className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">
+                <TableHead className="px-4 py-3 font-medium text-mocha-400">
                   Level
                 </TableHead>
-                <TableHead className="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">
+                <TableHead className="px-4 py-3 font-medium text-mocha-400">
                   Lessons
                 </TableHead>
               </TableRow>
@@ -65,18 +65,18 @@ export default function CourseInventoryTable({
                       >
                         {course.title.charAt(0)}
                       </div>
-                      <span className="font-medium text-gray-800 dark:text-white/90 group-hover:text-brand-500 ">
+                      <span className="font-medium text-mocha-500 group-hover:text-brand-500 ">
                         {course.title}
                       </span>
                     </Link>
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+                  <TableCell className="px-4 py-3 text-mocha-400">
                     {course.category}
                   </TableCell>
                   <TableCell className="px-4 py-3 text-theme-sm">
                     <Badge variant="outline">{course.level}</Badge>
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+                  <TableCell className="px-4 py-3 text-mocha-400">
                     {course.videoCount}
                   </TableCell>
                 </TableRow>
@@ -98,10 +98,10 @@ export default function CourseInventoryTable({
                   {course.title.charAt(0)}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <span className="block truncate font-medium text-gray-800 dark:text-white/90 group-hover:text-brand-500">
+                  <span className="block truncate font-medium text-mocha-500 group-hover:text-brand-500">
                     {course.title}
                   </span>
-                  <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-theme-xs text-gray-500 dark:text-gray-400">
+                  <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-theme-xs text-mocha-400">
                     <span>{course.category}</span>
                     <span aria-hidden>·</span>
                     <Badge variant="outline">{course.level}</Badge>

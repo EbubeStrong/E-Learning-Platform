@@ -255,7 +255,7 @@ export default function QuizEngine({ courseId, type }: EngineProps) {
 
   if (!userId) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-ivory-200">
+      <div className="flex min-h-screen items-center justify-center bg-ivory-200 dark:bg-nero-marquina-300">
         <Skeleton className="h-24 w-full max-w-xs rounded-2xl" />
       </div>
     );
@@ -288,7 +288,7 @@ export default function QuizEngine({ courseId, type }: EngineProps) {
     const meta = quizSession!.quiz;
     const canRetake = type === "practice" ? true : result.passed ? false : attemptsLeft > 0;
     return (
-      <div className="min-h-screen bg-ivory-200 px-4 py-10">
+      <div className="min-h-screen bg-ivory-200 dark:bg-nero-marquina-300 px-4 py-10">
         <div className="mx-auto max-w-2xl">
           <Link
             href="/dashboard/quiz"
@@ -391,7 +391,7 @@ export default function QuizEngine({ courseId, type }: EngineProps) {
     const timerKey = `${effectiveTimerSelection.mode}:${effectiveTimerSelection.timerType}`;
 
     return (
-      <div className="flex min-h-screen items-center justify-center bg-ivory-200 px-4">
+      <div className="flex min-h-screen items-center justify-center bg-ivory-200 dark:bg-nero-marquina-300 px-4">
         <div className="w-full max-w-lg rounded-3xl border border-mocha-300/60 bg-mocha-100 p-8 text-center">
           <Badge className="mb-3 rounded-full bg-mocha-300 text-mocha-500">
             {type}
@@ -487,7 +487,7 @@ export default function QuizEngine({ courseId, type }: EngineProps) {
       : perQuestionRemainingSec;
 
   return (
-    <div className="min-h-screen bg-ivory-200 px-4 py-8">
+    <div className="min-h-screen bg-ivory-200 dark:bg-nero-marquina-300 px-4 py-8">
       <div className="mx-auto max-w-3xl">
         <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
           <div className="min-w-0">
@@ -529,7 +529,7 @@ export default function QuizEngine({ courseId, type }: EngineProps) {
         <Progress
           value={progressPct}
           aria-label="Quiz progress"
-          className="mb-6 flex flex-col rounded-full [&_[data-slot=progress-track]]:h-2 [&_[data-slot=progress-track]]:rounded-full [&_[data-slot=progress-track]]:bg-mocha-300/40 [&_[data-slot=progress-indicator]]:rounded-full [&_[data-slot=progress-indicator]]:bg-mocha-500"
+          className="mb-6 flex flex-col rounded-full [&_[data-slot=progress-track]]:h-2 [&_[data-slot=progress-track]]:rounded-full [&_[data-slot=progress-track]]:bg-mocha-300/40 [&_[data-slot=progress-indicator]]:rounded-full [&_[data-slot=progress-indicator]]:bg-mocha-500/60"
         />
 
         {question && (
@@ -562,7 +562,7 @@ export default function QuizEngine({ courseId, type }: EngineProps) {
                       className={cn(
                         "flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold",
                         selected
-                          ? "bg-mocha-500 text-white"
+                          ? "bg-mocha-300 text-mocha-500"
                           : "bg-mocha-300/50 text-mocha-500"
                       )}
                     >
@@ -645,7 +645,7 @@ export default function QuizEngine({ courseId, type }: EngineProps) {
 
 function CenterCard({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-ivory-200 px-4">
+    <div className="flex min-h-screen items-center justify-center bg-ivory-200 dark:bg-nero-marquina-300 px-4">
       <div className="w-full max-w-md rounded-3xl border border-mocha-300/60 bg-mocha-100 p-8">
         {children}
       </div>

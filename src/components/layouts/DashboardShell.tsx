@@ -29,7 +29,7 @@ function DashboardFrame({
       : "lg:ml-[90px]";
 
   return (
-    <div className="marble min-h-screen xl:flex bg-gray-50 dark:bg-gray-900">
+    <div className="marble min-h-screen xl:flex dark:bg-nero-marquina-300">
       {/* Sidebar and Backdrop */}
       <AppSidebar navItems={navItems} othersItems={othersItems} />
       <Backdrop />
@@ -54,7 +54,7 @@ export default function DashboardShell({
   children,
   navItems,
   othersItems = [],
-  contentClassName = "bg-mocha-200 dark:bg-gray-900",
+  contentClassName = "bg-mocha-200 dark:bg-nero-marquina-300",
 }: {
   children: React.ReactNode;
   navItems: NavItem[];

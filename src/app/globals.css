@@ -123,6 +123,26 @@
   --ring: var(--mocha-300);
 }
 
+/* Dark-mode dashboard surfaces: map the mocha marble scale onto the
+   nero-marquina (black marble) scale and keep the ivory text family light
+   for readable headings. Scoped to `.marble` (dashboard shell and standalone
+   quiz screens) so the marketing pages keep the light palette. */
+.dark .marble {
+  --background: var(--nero-marquina-300);
+  --card: var(--nero-marquina-200);
+  --popover: var(--nero-marquina-200);
+  --primary: var(--nero-marquina-100);
+  --secondary: var(--nero-marquina-100);
+  --muted: var(--nero-marquina-100);
+  --border: var(--nero-marquina-100);
+  --input: var(--nero-marquina-100);
+  --mocha-100: var(--nero-marquina-200);
+  --mocha-200: var(--nero-marquina-300);
+  --mocha-300: var(--nero-marquina-100);
+  --mocha-400: var(--ivory-400);
+  --mocha-500: var(--ivory-200);
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -188,7 +208,7 @@
   --color-blue-light-800: var(--mocha-500);
   --color-blue-light-900: var(--mocha-500);
   --color-blue-light-950: var(--mocha-500);
-
+/* 
   --color-gray-25: var(--ivory-100);
   --color-gray-50: var(--ivory-200);
   --color-gray-100: var(--ivory-100);
@@ -201,9 +221,9 @@
   --color-gray-800: var(--mocha-500);
   --color-gray-900: var(--mocha-500);
   --color-gray-950: var(--mocha-500);
-  --color-gray-dark: var(--mocha-500);
+  --color-gray-dark: var(--mocha-500); */
 
-  --color-orange-25: var(--ivory-100);
+  /* --color-orange-25: var(--ivory-100);
   --color-orange-50: var(--ivory-500);
   --color-orange-100: var(--ivory-300);
   --color-orange-200: var(--ivory-400);
@@ -214,7 +234,7 @@
   --color-orange-700: var(--mocha-500);
   --color-orange-800: var(--mocha-500);
   --color-orange-900: var(--mocha-500);
-  --color-orange-950: var(--mocha-500);
+  --color-orange-950: var(--mocha-500); */
 
   --color-success-25: var(--ivory-100);
   --color-success-50: var(--ivory-500);
